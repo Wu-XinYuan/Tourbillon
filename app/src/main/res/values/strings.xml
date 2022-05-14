@@ -23,7 +23,6 @@
     <string name="Button_Import_Description">import</string>
     <string name="Button_Export_Description">export</string>
     <string name="Button_Settings_Description">Setting</string>
-
     <string name="action_login">Log In</string>
     <string name="action_settings">Settings</string>
     <string name="action_sync">Sync</string>
@@ -123,4 +122,6 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+    <string name="import_courses">import courses</string>
+    <string name="get_courses">get courses</string>
 </resources>

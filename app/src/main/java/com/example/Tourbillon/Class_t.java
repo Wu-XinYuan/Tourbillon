@@ -29,8 +29,8 @@ public class Class_t {
     public String c_detail;  //备注
     public boolean c_isclass = true;
     private int contentColor;
-    private String[] start_times = {"8:00", "8:55", "10:00", "10:55", "12:55", "14:00", "14:55", "16:00", "16:55", "18:00", "18:55", "19:45"};
-    private String [] end_times = {"8:45", "9:40", "10:45", "11:40", "13:40", "14:45", "15:40", "16:45", "17:40", "18:45", "19:40", "20:40"};
+    private String[] start_times = {"8:00", "8:55", "10:00", "10:55", "12:00", "12:55", "14:00", "14:55", "16:00", "16:55", "18:00", "18:55", "19:45", "20:30"};
+    private String [] end_times = {"8:45", "9:40", "10:45", "11:40", "12:45", "13:40", "14:45", "15:40", "16:45", "17:40", "18:45", "19:40", "20:20", "21:20"};
 
 
     @Override
@@ -138,5 +138,13 @@ public class Class_t {
 
     public String getEndTime(){
         return end_times[c_time+c_duration-2];
+    }
+
+    public void setC_detail(String c_detail) {
+        this.c_detail = c_detail;
+    }
+
+    public String getC_detail() {
+        return c_detail;
     }
 }

@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,13 +33,24 @@ import java.text.SimpleDateFormat;
 public class MainActivity extends AppCompatActivity {
     final ClassManager classOp = new ClassManager(MainActivity.this);
     ImageButton add;
-    Date curDate;
+    public static Date curDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         add = (ImageButton) findViewById(R.id.ImageButton_Add);
+        LinearLayout linearLayout_Time = findViewById(R.id.LinearLayout_Time);
+
+        // 导入课程按钮
+        ImageButton button_import = findViewById(R.id.ImageButton_Import);
+        button_import.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //填写日期
         TextView textView_date = findViewById(R.id.TextView_date);
@@ -47,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         textView_date.setText(formatter.format(curDate));
 
         //测试：加入测试数据
-        addTestData();
+        //addTestData();
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        linearLayout_Time.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: layout_time");
+            }
+        });
     }
 
     @Override
@@ -91,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void drawClassBoxes() {
-
         //从数据库拿到课程数据保存在链表
         List<Class_t> classes = classOp.query();
         ScheduleView scheduleView = findViewById(R.id.ScheduleView);
