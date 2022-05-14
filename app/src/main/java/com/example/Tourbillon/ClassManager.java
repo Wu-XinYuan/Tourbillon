@@ -74,6 +74,19 @@ public class ClassManager {
         db.delete(ClassDBHelper.TABLE_NAME, "c_id" + "=?", new String[]{String.valueOf(id)});
         db.close();
     }
+    public void delete(Class_t myclass) {
+        //与数据库建立连接
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        db.delete(ClassDBHelper.TABLE_NAME,
+                Class_t.COLUMN_startw + "=?" +
+                        Class_t.COLUMN_day + "=?" +
+                        Class_t.COLUMN_time + "=?",
+                        new String[]{String.valueOf(myclass.c_startWeek),
+                                String.valueOf(myclass.c_day),
+                                String.valueOf(myclass.c_time)});
+        db.close();
+    }
 
     /**
      * 通过id查找，返回一个Class_t对象
@@ -88,6 +101,50 @@ public class ClassManager {
                 " from " + ClassDBHelper.TABLE_NAME + " where " + Class_t.KEY_id + "=?";
         Class_t myclass = new Class_t();
         Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(id)});
+        while (cursor.moveToNext()) {
+            int i = cursor.getColumnIndex(Class_t.KEY_id);
+            int j = cursor.getColumnIndex(Class_t.COLUMN_name);
+            int k = cursor.getColumnIndex(Class_t.COLUMN_time);
+            int l = cursor.getColumnIndex(Class_t.COLUMN_duration);
+            int p = cursor.getColumnIndex(Class_t.COLUMN_startw);
+            int q = cursor.getColumnIndex(Class_t.COLUMN_endw);
+            int t = cursor.getColumnIndex(Class_t.COLUMN_day);
+            int m = cursor.getColumnIndex(Class_t.COLUMN_room);
+            int n = cursor.getColumnIndex(Class_t.COLUMN_teacher);
+            if(i >= 0)
+                myclass.c_id = cursor.getString(i);
+            if(j >= 0)
+                myclass.c_name = cursor.getString(j);
+            if(k >= 0)
+                myclass.c_time = cursor.getInt(k);
+            if(l >= 0)
+                myclass.c_duration = cursor.getInt(l);
+            if(p >= 0)
+                myclass.c_startWeek = cursor.getInt(p);
+            if(q >= 0)
+                myclass.c_endWeek = cursor.getInt(q);
+            if(t >= 0)
+                myclass.c_day = cursor.getInt(t);
+            if(m >= 0)
+                myclass.c_room = cursor.getString(m);
+            if(n >= 0)
+                myclass.c_teacher = cursor.getString(n);
+        }
+        cursor.close();
+        db.close();
+        return myclass;
+    }
+
+    public Class_t getClassById(int week, int day, int time) {
+        //与数据库建立连接
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = " select " + Class_t.COLUMN_name + "," + Class_t.COLUMN_time +
+                "," + Class_t.COLUMN_duration + "," + Class_t.COLUMN_startw +
+                "," + Class_t.COLUMN_endw + "," + Class_t.COLUMN_day +
+                "," + Class_t.COLUMN_detail +
+                " from " + ClassDBHelper.TABLE_NAME + " where " + Class_t.KEY_id + "=?";
+        Class_t myclass = new Class_t();
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(week),String.valueOf(day),String.valueOf(time)});
         while (cursor.moveToNext()) {
             int i = cursor.getColumnIndex(Class_t.KEY_id);
             int j = cursor.getColumnIndex(Class_t.COLUMN_name);
@@ -166,7 +223,7 @@ public class ClassManager {
     /**
      * 更新数据
      */
-    public void update(Class_t myclass) {
+    public boolean update(Class_t myclass) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -182,6 +239,7 @@ public class ClassManager {
 
         db.update(ClassDBHelper.TABLE_NAME, contentValues, Class_t.KEY_id + "=?", new String[]{String.valueOf(myclass.c_id)});
         db.close();
+        return true;
     }
 }
 

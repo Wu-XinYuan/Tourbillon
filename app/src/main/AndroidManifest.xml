@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tourbillon">
         <activity
+            android:name=".ScheduleActivity"
+            android:exported="false" />
+        <activity
             android:name=".SchduleActivity"
             android:exported="false" />
         <activity
