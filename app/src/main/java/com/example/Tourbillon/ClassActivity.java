@@ -15,15 +15,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.Arrays;
 
-public class ScheduleActivity extends AppCompatActivity {
-    final ClassManager classOp = new ClassManager(ScheduleActivity.this);
+public class ClassActivity extends AppCompatActivity {
+    final ClassManager classOp = new ClassManager(ClassActivity.this);
     public static final int ACTION_INSERT = 0;
     public static final int ACTION_MODIFY = 1;
     public static final int ACTION_DETAIL = 2;
     private final boolean[] isWeekSelected = new boolean[Class_t.MAX_WEEKS];
     private final String[] weekItems = new String[Class_t.MAX_WEEKS];
     private final String[] startItems = new String[Class_t.MAX_STEPS];
-    private EditText etSchedule, etDetail;
+    private EditText etCourse, etTeacher, etLocation, etNote, etClassId;
     private TextView tvWeeks, tvDay, tvStart, tvEnd;
     private int day;
     private int start;
@@ -35,32 +35,32 @@ public class ScheduleActivity extends AppCompatActivity {
     private int action;
     private Class_t course;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_schedule);
+        setContentView(R.layout.activity_class);
         initUI();
     }
 
     private void initUI() {
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Schedule");
+        toolbar.setTitle("Course");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        etSchedule = findViewById(R.id.et_schedule);
-        etDetail = findViewById(R.id.et_detail);
+        etCourse = findViewById(R.id.et_course);
+        etTeacher = findViewById(R.id.et_teacher);
+        etLocation = findViewById(R.id.et_location);
+        etNote = findViewById(R.id.et_note);
+        etClassId = findViewById(R.id.et_class_id);
         tvWeeks = findViewById(R.id.tv_weeks);
         tvDay = findViewById(R.id.tv_day);
         tvDay.setText(getResources().getStringArray(R.array.days_in_week)[day]);
         tvDay.setOnClickListener(v -> showDayDialog());
         tvStart = findViewById(R.id.tv_start);
-        //这里到时候可以改成DatePickerDialog选择的结果
         tvStart.setText(String.format(getString(R.string.period), String.valueOf(start)));
         tvStart.setOnClickListener(v -> showStartDialog());
         tvEnd = findViewById(R.id.tv_end);
-        //同DatePickerDialog
         tvEnd.setText(String.format(getString(R.string.period), String.valueOf(end)));
         tvEnd.setOnClickListener(v -> showEndDialog());
         tvWeeks.setOnClickListener(v -> showWeekDialog());
@@ -68,14 +68,15 @@ public class ScheduleActivity extends AppCompatActivity {
         Intent intent = getIntent();
         action = intent.getIntExtra("action", ACTION_INSERT);
         if (action == ACTION_INSERT) {
-            day = 1;
-            int week = 1;
-            end = start = 1;
+            day = intent.getIntExtra("day", 1);
+            start = intent.getIntExtra("start", 1);
+            int week = intent.getIntExtra("week", 1);
+            end = start;
             step = 1;
             isWeekSelected[week - 1] = true;
             course = new Class_t();
         } else if (action == ACTION_DETAIL) {
-            //course = classOp.query(...);
+            //course = classOp.query();
         }
         actionChange();
         refreshTextViewAfterDialog();
@@ -83,13 +84,17 @@ public class ScheduleActivity extends AppCompatActivity {
 
     private void loadInitData() {
         if (action == ACTION_DETAIL) {
-            etSchedule.setText(course.c_name);
-            etDetail.setText(course.c_detail);
+            etClassId.setText(course.c_id);
+            etCourse.setText(course.c_name);
+            etLocation.setText(course.c_room);
+            etTeacher.setText(course.c_teacher);
+            etNote.setText(course.c_detail);
             day = course.c_day;
             start = course.c_time;
             step = course.c_duration;
             end = start + step - 1;
-            for (int i = course.c_startWeek; i < course.c_endWeek; i++) {
+            weekCode = course.getWeekCode().toCharArray();
+            for (int i = 0; i < weekCode.length; i++) {
                 isWeekSelected[i] = weekCode[i] == '1';
             }
         }
@@ -193,7 +198,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
 
     private boolean checkCourse(boolean insert) {
-        if ("".equals(etSchedule.getText().toString().trim())) {
+        if ("".equals(etCourse.getText().toString().trim())) {
             Toast.makeText(this, getString(R.string.please_input_name), Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -205,14 +210,15 @@ public class ScheduleActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.please_select_period), Toast.LENGTH_SHORT).show();
             return false;
         }
-        course.c_name = etSchedule.getText().toString().trim();
-        course.c_time= start;
-        course.c_duration=step;
-        course.c_day=day;
-        course.c_detail=etDetail.getText().toString().trim();
-        //如果week不是一个范围那这里要改
-        course.c_startWeek=weekCode[0];
-        course.c_endWeek=weekCode[weekCode.length-1];
+        course.setC_id(etClassId.getText().toString().trim());
+        course.setC_name(etCourse.getText().toString().trim());
+        course.setC_teacher(etTeacher.getText().toString().trim());
+        course.setWeekCode(new String(weekCode));
+        course.setC_time(start);
+        course.setC_duration(step);
+        course.setC_day(day);
+        course.setC_room(etLocation.getText().toString().trim());
+        course.setC_detail(etNote.getText().toString().trim());
         if(insert)
             return classOp.insert(course);
         else
@@ -223,9 +229,9 @@ public class ScheduleActivity extends AppCompatActivity {
     private void deleteCourse() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.warning))
-                .setMessage(String.format(getString(R.string.sure_to_delete), course.c_name))
+                .setMessage(String.format(getString(R.string.sure_to_delete), course.getC_name()))
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
-                    classOp.delete(course);
+                    classOp.delete(course);//delete函数要改
                     finish();
                 })
                 .setNegativeButton(R.string.cancel, null);
@@ -235,7 +241,7 @@ public class ScheduleActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.schedule_menu, menu);
+        getMenuInflater().inflate(R.menu.course_menu, menu);
         return true;
     }
 
@@ -271,8 +277,11 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
     private void actionChange() {
-        etSchedule.setEnabled(action != ACTION_DETAIL);
-        etDetail.setEnabled(action != ACTION_DETAIL);
+        etClassId.setEnabled(action != ACTION_DETAIL);
+        etCourse.setEnabled(action != ACTION_DETAIL);
+        etNote.setEnabled(action != ACTION_DETAIL);
+        etTeacher.setEnabled(action != ACTION_DETAIL);
+        etLocation.setEnabled(action != ACTION_DETAIL);
         tvWeeks.setEnabled(action != ACTION_DETAIL);
         tvEnd.setEnabled(action != ACTION_DETAIL);
         tvStart.setEnabled(action != ACTION_DETAIL);

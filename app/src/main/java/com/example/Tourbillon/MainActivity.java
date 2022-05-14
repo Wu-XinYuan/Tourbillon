@@ -116,7 +116,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if (id==R.id.action_addcourse){
-
+                    Intent intent = new Intent(MainActivity.this, ClassActivity.class);
+                    intent.putExtra("action", ClassActivity.ACTION_INSERT);
+                    startActivity(intent);
                 }
                 else if(id==R.id.action_addschedule) {
                     Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
