@@ -65,10 +65,9 @@ public class ScheduleActivity extends AppCompatActivity {
         Intent intent = getIntent();
         action = intent.getIntExtra("action", ACTION_INSERT);
         if (action == ACTION_INSERT) {
-            day = intent.getIntExtra("day", 1);
-            start = intent.getIntExtra("start", 1);
-            int week = intent.getIntExtra("week", 1);
-            end = start;
+            day = 1;
+            int week = 1;
+            end = start = 1;
             step = 1;
             isWeekSelected[week - 1] = true;
             course = new Class_t();
@@ -148,10 +147,10 @@ public class ScheduleActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.ok,
                 (dialog, which) -> {
                     tvStart.setText(startItems[start - 1]);
-                    endItems = new String[Course.MAX_STEPS - start + 1];
-                    for (int i = start; i <= Course.MAX_STEPS; i++)
+                    endItems = new String[Class_t.MAX_STEPS - start + 1];
+                    for (int i = start; i <= Class_t.MAX_STEPS; i++)
                         endItems[i - start] = String.format(getString(R.string.period), String.valueOf(i));
-                    if (step - 1 < Course.MAX_STEPS - start)
+                    if (step - 1 < Class_t.MAX_STEPS - start)
                         tvEnd.setText(endItems[step - 1]);
                     else
                         tvEnd.setText(endItems[0]);
@@ -203,22 +202,26 @@ public class ScheduleActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.please_select_period), Toast.LENGTH_SHORT).show();
             return false;
         }
-        course.c_name = etSchedule.getText().toString().trim());
+        course.c_name = etSchedule.getText().toString().trim();
         course.c_time= start;
         course.c_duration=step;
         course.c_day=day;
-        course.c_detail=etDetail.getText().toString().trim());
-        course.setToDefault("isFromServer");
-        return course.save();
+        course.c_detail=etDetail.getText().toString().trim();
+        course.c_startWeek=weekCode[0];
+        course.c_endWeek=weekCode[weekCode.length-1];
+        if(insert)
+            return classOp.insert(course);
+        else
+            return classOp.update(course);
     }
 
 
     private void deleteCourse() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.warning))
-                .setMessage(String.format(getString(R.string.sure_to_delete), course.getCourseName()))
+                .setMessage(String.format(getString(R.string.sure_to_delete), course.c_name))
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
-                    course.delete();
+                    classOp.delete(course);
                     finish();
                 })
                 .setNegativeButton(R.string.cancel, null);
@@ -228,7 +231,7 @@ public class ScheduleActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_course, menu);
+        getMenuInflater().inflate(R.menu.schedule_menu, menu);
         return true;
     }
 

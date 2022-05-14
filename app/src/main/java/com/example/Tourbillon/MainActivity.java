@@ -119,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 else if(id==R.id.action_addschedule) {
-
+                    Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
+                    intent.putExtra("action", ScheduleActivity.ACTION_INSERT);
+                    startActivity(intent);
                 }
                 return false;
             }
