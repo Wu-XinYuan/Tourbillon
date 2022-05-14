@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Application_schedule</string>
+    <string name="classtime_1">8:00\n8:45</string>
+    <string name="classtime_2">8:55\n9:40</string>
+    <string name="classtime_3">10:00\n10:45</string>
+    <string name="classtime_4">10:55\n11:40</string>
+    <string name="classtime_5">12:55\n13:40</string>
+    <string name="classtime_6">14:00\n14:45</string>
+    <string name="classtime_7">14:55\n15:40</string>
+    <string name="classtime_8">16:00\n16:45</string>
+    <string name="classtime_9">16:55\n17:40</string>
+    <string name="classtime_10">18:00\n18:45</string>
+    <string name="classtime_11">18:55\n19:40</string>
+    <string name="classtime_12">19:45\n20:40</string>
+    <string name="Monday">一</string>
+    <string name="Tuesday">二</string>
+    <string name="Wednesday">三</string>
+    <string name="Thursday">四</string>
+    <string name="Friday">五</string>
+    <string name="Saturday">六</string>
+    <string name="Sunday">日</string>
+    <string name="Button_Add_description">add class</string>
+    <string name="Button_Import_Description">import</string>
+    <string name="Button_Export_Description">export</string>
+    <string name="Button_Settings_Description">Setting</string>
+</resources>

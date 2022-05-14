@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ScheduleView">
+        <attr name="columnNumber" format="integer" />
+        <attr name="rowHeight" format="dimension" />
+        <attr name="lineSize" format="dimension" />
+        <attr name="lineColor" format="color" />
+        <attr name="bgColor" format="color" />
+        <attr name="hourTextSize" format="dimension" />
+        <attr name="hourTextColor" format="color" />
+        <attr name="hourTextBgColor" format="color" />
+        <attr name="pastTimeColor" format="color" />
+        <attr name="currentTimeColor" format="color" />
+        <attr name="currentTimeTextColor" format="color" />
+        <attr name="currentTimeTextSize" format="dimension" />
+        <attr name="addTextColor" format="color" />
+        <attr name="addBgColor" format="color" />
+        <attr name="addTextSize" format="dimension" />
+        <attr name="allDayEventBgColor" format="color" />
+        <attr name="allDayCountTextSize" format="dimension" />
+        <attr name="allDayCountTextColor" format="color" />
+        <attr name="allDayEventTitleColor" format="color" />
+        <attr name="allDayEventTitleSize" format="dimension" />
+        <attr name="allDayEventDefaultColor" format="color" />
+        <attr name="allDayEventSize" format="dimension" />
+        <attr name="allDayEventRowHeight" format="dimension" />
+        <attr name="allDayEventMinRow" format="integer" />
+        <attr name="allDayEventMaxRow" format="integer" />
+        <attr name="eventTextSize" format="dimension" />
+        <attr name="eventTextColor" format="color" />
+        <attr name="eventTextBgColor" format="color" />
+        <attr name="eventTextBgLineColor" format="color" />
+    </declare-styleable>
+
+</resources>
