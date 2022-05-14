@@ -16,6 +16,7 @@ public class Class_t {
     public static final String COLUMN_teacher = "c_teacher";
     public static final String COLUMN_detail = "c_detail";
     public static final String COLUMN_isclass = "c_isclass";
+    public static final String COLUMN_weekcode = "weekCode";
 
     public String c_id;
     public String c_name;
@@ -27,6 +28,7 @@ public class Class_t {
     public String c_room;
     public String c_teacher;
     public String c_detail;  //备注
+    private String weekCode;
     public boolean c_isclass = true;
     private int contentColor;
     private String[] start_times = {"8:00", "8:55", "10:00", "10:55", "12:00", "12:55", "14:00", "14:55", "16:00", "16:55", "18:00", "18:55", "19:45", "20:30"};
@@ -140,11 +142,19 @@ public class Class_t {
         return end_times[c_time+c_duration-2];
     }
 
-    public void setC_detail(String c_detail) {
-        this.c_detail = c_detail;
-    }
-
     public String getC_detail() {
         return c_detail;
+    }
+
+    public void setC_detail(String detail) {
+        this.c_detail = detail;
+    }
+
+    public String getWeekCode() {
+        return weekCode;
+    }
+
+    public void setWeekCode(String weekCode) {
+        this.weekCode = weekCode;
     }
 }

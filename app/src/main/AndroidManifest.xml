@@ -13,6 +13,9 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Tourbillon">
         <activity
+            android:name=".ClassActivity"
+            android:exported="false" />
+        <activity
             android:name=".ScheduleActivity"
             android:exported="false" />
         <activity

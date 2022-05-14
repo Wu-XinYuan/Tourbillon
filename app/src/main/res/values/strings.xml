@@ -90,7 +90,6 @@
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
     <string name="action_modify">Modify</string>
-    <string name="course_id">Course</string>
     <string name="warning">Warning!</string>
     <string name="sure_to_delete">Sure to delete %s ?</string>
     <string name="pref_remove_customized">Remove customized courses when sync</string>
@@ -101,7 +100,7 @@
     <string name="pref_chi_icon">Use Chi Mode</string>
     <string name="pref_status">Status</string>
     <string name="failed">Failed</string>
-    <string name="class_id">Class</string>
+    <string name="class_id">ID</string>
     <string name="succeed_in_sync">Succeed in Sync</string>
     <string name="not_filled_required">Not filled (Required)</string>
     <string name="pref_first_monday">First Monday</string>
