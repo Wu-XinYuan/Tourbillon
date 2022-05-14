@@ -7,20 +7,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class ClassDBHelper extends SQLiteOpenHelper {
+    private static final int DATABASE_VERSION=1;
     public static final String TABLE_NAME = "classes_db";
+    public ClassDBHelper(Context context ) { super(context, TABLE_NAME, null, DATABASE_VERSION);}
 
-    public SQLiteDatabase getWritableDatabase() {
-        return super.getWritableDatabase();
-    }
-
-
-    public ClassDBHelper(@Nullable Context context,
-                         @Nullable String name,
-                         @Nullable SQLiteDatabase.CursorFactory factory,
-                         int version) {
-        super(context, name, factory, version);
-    }
-
+    /**
+     * 创建一个数据库，建表，只在第一次时调用
+     */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("create table " + TABLE_NAME +
@@ -35,9 +28,16 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 " c_teacher varchar(50))");
     }
 
+    /**
+     * 作用：更新数据库表结构
+     * 调用时机：数据库版本发生变化的时候回调（取决于数据库版本）
+     * 创建SQLiteOpenHelper子类对象的时候,必须传入一个version参数
+     //该参数就是当前数据库版本, 只要这个版本高于之前的版本, 就会触发这个onUpgrade()方法
+     */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        sqLiteDatabase.execSQL("drop table if exists "+TABLE_NAME);
+        onCreate(sqLiteDatabase);
     }
 
 }

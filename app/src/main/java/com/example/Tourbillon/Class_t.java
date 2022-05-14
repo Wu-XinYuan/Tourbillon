@@ -2,15 +2,32 @@ package com.example.Tourbillon;
 import com.example.Tourbillon.R;
 
 public class Class_t {
-    private String c_id;
-    private String c_name;
-    private int c_time;   //1-12
-    private int c_duration;
-    private int c_startWeek;
-    private int c_endWeek;
-    private int c_day;    //1-7
-    private String c_room;
-    private String c_teacher;
+    public static final int MAX_STEPS = 14;
+    public static final int MAX_WEEKS = 18;
+    //列名
+    public static final String KEY_id = "c_id";
+    public static final String COLUMN_name = "c_name";
+    public static final String COLUMN_time = "c_time";
+    public static final String COLUMN_duration = "c_duration";
+    public static final String COLUMN_startw = "c_startWeek";
+    public static final String COLUMN_endw = "c_endWeek";
+    public static final String COLUMN_day = "c_day";
+    public static final String COLUMN_room = "c_room";
+    public static final String COLUMN_teacher = "c_teacher";
+    public static final String COLUMN_detail = "c_detail";
+    public static final String COLUMN_isclass = "c_isclass";
+
+    public String c_id;
+    public String c_name;
+    public int c_time;   //1-12
+    public int c_duration;
+    public int c_startWeek;
+    public int c_endWeek;
+    public int c_day;    //1-7
+    public String c_room;
+    public String c_teacher;
+    public String c_detail;  //备注
+    public boolean c_isclass = true;
     private int contentColor;
     private String[] start_times = {"8:00", "8:55", "10:00", "10:55", "12:55", "14:00", "14:55", "16:00", "16:55", "18:00", "18:55", "19:45"};
     private String [] end_times = {"8:45", "9:40", "10:45", "11:40", "13:40", "14:45", "15:40", "16:45", "17:40", "18:45", "19:40", "20:40"};
