@@ -16,16 +16,18 @@ import java.util.List;
 import java.util.Random;
 
 public class ClassManager {
-    private ClassDBHelper dbHelper;
+    public static ClassDBHelper dbHelper;
+
     public ClassManager(Context context) {
         dbHelper = new ClassDBHelper(context);
     }
-    private final String[] pleasantColors = {"#9FFC6472", "#9FF4B2A6", "#9FECCDB3", "#9FBCEFD0", "#9FA1E8E4", "#9F23C8B2", "#9FC3ACEE"};
+
+    public static final String[] pleasantColors = {"#9FFC6472", "#9FF4B2A6", "#9FECCDB3", "#9FBCEFD0", "#9FA1E8E4", "#9F23C8B2", "#9FC3ACEE"};
 
     /**
      * 插入数据
      */
-    public void insertData(String id, String name, Integer time, Integer duration, Integer startWeek, Integer endWeek, Integer day, String room, String teacher) {
+    public static void insertData(String id, String name, Integer time, Integer duration, Integer startWeek, Integer endWeek, Integer day, String room, String teacher) {
         // 实际上是更新，为了保存顺序
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Log.i(TAG, "insertData" + id + name);
@@ -43,8 +45,9 @@ public class ClassManager {
         db.close();
     }
 
-    public boolean insert(Class_t myclass) {
+    public static boolean insert(Class_t myclass) {
         //与数据库建立连接
+        Log.d("insert_class", "insert by Class_t: " + myclass.getC_name());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("c_id", myclass.getC_id());
@@ -68,7 +71,7 @@ public class ClassManager {
     /**
      * 删除数据
      */
-    public void delete(String id) {
+    public static void delete(String id) {
         //与数据库建立连接
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(ClassDBHelper.TABLE_NAME, "c_id" + "=?", new String[]{String.valueOf(id)});
@@ -91,7 +94,7 @@ public class ClassManager {
     /**
      * 通过id查找，返回一个Class_t对象
      */
-    public Class_t getClassById(String id) {
+    public static Class_t getClassById(String id) {
         //与数据库建立连接
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = " select " + Class_t.KEY_id + "," + Class_t.COLUMN_name +
@@ -111,23 +114,23 @@ public class ClassManager {
             int t = cursor.getColumnIndex(Class_t.COLUMN_day);
             int m = cursor.getColumnIndex(Class_t.COLUMN_room);
             int n = cursor.getColumnIndex(Class_t.COLUMN_teacher);
-            if(i >= 0)
+            if (i >= 0)
                 myclass.c_id = cursor.getString(i);
-            if(j >= 0)
+            if (j >= 0)
                 myclass.c_name = cursor.getString(j);
-            if(k >= 0)
+            if (k >= 0)
                 myclass.c_time = cursor.getInt(k);
-            if(l >= 0)
+            if (l >= 0)
                 myclass.c_duration = cursor.getInt(l);
-            if(p >= 0)
+            if (p >= 0)
                 myclass.c_startWeek = cursor.getInt(p);
-            if(q >= 0)
+            if (q >= 0)
                 myclass.c_endWeek = cursor.getInt(q);
-            if(t >= 0)
+            if (t >= 0)
                 myclass.c_day = cursor.getInt(t);
-            if(m >= 0)
+            if (m >= 0)
                 myclass.c_room = cursor.getString(m);
-            if(n >= 0)
+            if (n >= 0)
                 myclass.c_teacher = cursor.getString(n);
         }
         cursor.close();
@@ -180,7 +183,7 @@ public class ClassManager {
     }
 
     @SuppressLint("Range")
-    public List<Class_t> query() {
+    public static List<Class_t> query() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = " select " + Class_t.KEY_id + "," + Class_t.COLUMN_name +
                 "," + Class_t.COLUMN_time + "," + Class_t.COLUMN_duration +
@@ -198,8 +201,9 @@ public class ClassManager {
             if (!cursor.getString(cursor.getColumnIndex("c_day")).equals("0")) {
                 Class_t Class = new Class_t();
 
+                String name = cursor.getString(cursor.getColumnIndex("c_name"));
                 Class.setC_id(cursor.getString(cursor.getColumnIndex("c_id")));
-                Class.setC_name(cursor.getString(cursor.getColumnIndex("c_name")));
+                Class.setC_name(name);
                 Class.setC_time(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_time"))));
                 Class.setC_startWeek(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_startWeek"))));
                 Class.setC_endWeek(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_endWeek"))));
@@ -207,8 +211,8 @@ public class ClassManager {
                 Class.setC_day(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_day"))));
                 Class.setC_room(cursor.getString(cursor.getColumnIndex("c_room")));
                 Class.setC_teacher(cursor.getString(cursor.getColumnIndex("c_teacher")));
-                Random random = new Random();
-                Class.setColor(Color.parseColor(pleasantColors[random.nextInt(5)]));
+                int seed = ((int) name.charAt(0)) % 7;
+                Class.setColor(Color.parseColor(pleasantColors[seed]));
                 classes.add(Class);
             }
             // 将游标移到下一行
@@ -223,7 +227,7 @@ public class ClassManager {
     /**
      * 更新数据
      */
-    public boolean update(Class_t myclass) {
+    public static boolean update(Class_t myclass) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 

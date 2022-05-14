@@ -36,4 +36,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'io.openharmony.tpc.thirdlib:TimetableView:1.0.4'
+    /* okHttp */
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 }
