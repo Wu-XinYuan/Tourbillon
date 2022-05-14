@@ -6,7 +6,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.application_schedule"
+        applicationId "com.example.Tourbillon"
         minSdk 28
         targetSdk 31
         versionCode 1

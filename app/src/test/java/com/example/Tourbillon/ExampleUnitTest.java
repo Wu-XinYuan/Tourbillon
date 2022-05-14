@@ -1,4 +1,4 @@
-package com.example.application_schedule;
+package com.example.Tourbillon;
 
 import org.junit.Test;
 

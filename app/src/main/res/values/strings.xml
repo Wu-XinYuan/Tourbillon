@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Application_schedule</string>
+    <string name="app_name">Tourbillon</string>
     <string name="classtime_1">8:00\n8:45</string>
     <string name="classtime_2">8:55\n9:40</string>
     <string name="classtime_3">10:00\n10:45</string>

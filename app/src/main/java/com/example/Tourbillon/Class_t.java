@@ -1,6 +1,5 @@
-package com.example.application_schedule;
-import com.example.application_schedule.R;
-import android.content.res.Resources;
+package com.example.Tourbillon;
+import com.example.Tourbillon.R;
 
 public class Class_t {
     private String c_id;

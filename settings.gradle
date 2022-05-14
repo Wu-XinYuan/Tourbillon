@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Application_schedule"
+rootProject.name = "Tourbillon"
 include ':app'
