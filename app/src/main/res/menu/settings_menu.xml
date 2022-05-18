@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.Tourbillon.MainActivity" >
+
+    <item
+        android:id="@+id/settings_queryClassroom"
+        android:orderInCategory="200"
+        android:title="@string/query_classroom"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/settings_queryLibrary"
+        android:orderInCategory="200"
+        android:title="@string/query_library"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/settings_others"
+        android:orderInCategory="200"
+        android:title="@string/others"
+        app:showAsAction="ifRoom" />
+
+</menu>
