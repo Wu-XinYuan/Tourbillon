@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
@@ -28,14 +29,16 @@ import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private String login_url = "https://i.sjtu.edu.cn/xtgl/login_slogin.html";
+    WebView webview;
+    Button get_courses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        WebView webview = (WebView) findViewById(R.id.login_web);
-        Button get_courses = (Button) findViewById(R.id.get_courses_button);
+        webview = (WebView) findViewById(R.id.login_web);
+        get_courses = (Button) findViewById(R.id.get_courses_button);
 
         // 跳转到 SJTU 教学信息服务网
         webview.getSettings().setJavaScriptEnabled(true);
@@ -48,6 +51,22 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
         );
+
+        webview.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    //按返回键操作并且能回退网页
+                    if (keyCode == KeyEvent.KEYCODE_BACK && webview.canGoBack()) {
+                        //后退
+                        webview.goBack();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
 
         // 返回按钮，找到课程表页面时按下，开启解析课程HTML文件，并将其加入数据库的操作
         get_courses.setOnClickListener(new View.OnClickListener() {
