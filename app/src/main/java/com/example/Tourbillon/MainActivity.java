@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 public class MainActivity extends AppCompatActivity {
     final ClassManager classOp = new ClassManager(MainActivity.this);
     ImageButton add;
+    ImageButton button_setting;
     public static Date curDate;
 
     @Override
@@ -41,6 +42,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         add = (ImageButton) findViewById(R.id.ImageButton_Add);
         LinearLayout linearLayout_Time = findViewById(R.id.LinearLayout_Time);
+
+        // 查询空闲教室
+        button_setting = findViewById(R.id.ImageButton_Settings);
+        button_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 显示setting的菜单栏
+                showSettingsMenu(view);
+            }
+        });
 
         // 导入课程按钮
         ImageButton button_import = findViewById(R.id.ImageButton_Import);
@@ -141,6 +152,33 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
                     intent.putExtra("action", ScheduleActivity.ACTION_INSERT);
                     startActivity(intent);
+                }
+                return false;
+            }
+        });
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void showSettingsMenu(View view){
+        PopupMenu popupMenu = new PopupMenu(MainActivity.this, view);
+        popupMenu.getMenuInflater().inflate(R.menu.settings_menu,popupMenu.getMenu());
+        popupMenu.show();
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id==R.id.settings_queryClassroom){
+                    Intent intent = new Intent(MainActivity.this, ClassroomQueryActivity.class);
+                    startActivity(intent);
+                }
+                else if(id==R.id.settings_queryLibrary) {
+                    Intent intent = new Intent(MainActivity.this, LibraryQueryActivity.class);
+                    startActivity(intent);
+
+                }
+                else if(id == R.id.settings_others) {
+                    // to do
                 }
                 return false;
             }

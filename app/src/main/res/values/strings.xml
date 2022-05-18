@@ -111,6 +111,12 @@
     <string name="following_courses">Courses</string>
     <string name="refresh">refresh</string>
     <string name="widget_update">Widget updated</string>
+    <string name="others">Others</string>
+    <string name="query_classroom">Query Classroom</string>
+    <string name="query_library">Query Library</string>
+    <string name="room_appointment">Group study room\nappointments</string>
+    <string name="return2app">return</string>
+
 
     <string-array name="pref_status_entries">
         <item>Undergraduate</item>
