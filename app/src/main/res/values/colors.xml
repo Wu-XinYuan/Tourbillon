@@ -16,4 +16,6 @@
     <color name="colorLeftClass">#BDBDBD</color>
     <color name="colorTableBody">#FFF9C4</color>
     <color name="colorDivider">#AAAAAA</color>
+    <color name="colorButton">#940F0F</color> //#A30E0E
+    <color name="colorLibrary">#CD1515</color> //#A30E0E
 </resources>
