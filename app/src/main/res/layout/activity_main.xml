@@ -164,6 +164,7 @@
             android:id="@+id/ScheduleView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             app:addBgColor="#dff4ff"
             app:addTextColor="#47a1f6"
             app:addTextSize="26sp"

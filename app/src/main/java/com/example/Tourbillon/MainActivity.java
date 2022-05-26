@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -74,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
         curDate = new Date(System.currentTimeMillis());
         textView_date.setText(formatter.format(curDate));
 
-        //测试：加入测试数据
-        //addTestData();
-
+        //添加按钮设置
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,15 +83,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        linearLayout_Time.setOnClickListener(view -> showPasswordDialog(MainActivity.this
+        //切换当前周按钮设置
+        linearLayout_Time.setOnClickListener(view -> showEditWeekDialog(MainActivity.this
                 , new DialogButtonOnClickListener() {
                     @Override
                     public void onPositive(String Week) {
                         int week = Integer.parseInt(Week);
-                        if (week>0 && week< 21)
-                            ClassManager.CurWeek = week;
-                            TextView curweek = findViewById(R.id.TextView_Week);
-                            curweek.setText("第"+week + "周");
+                        if (week > 0 && week < 21)
+                            ClassManager.setCurWeek(week);
+                        TextView curweek = findViewById(R.id.TextView_Week);
+                        curweek.setText("第" + week + "周");
                     }
 
                     @Override
@@ -100,6 +100,26 @@ public class MainActivity extends AppCompatActivity {
                         //Execute when cancel is pressed
                     }
                 }));
+
+        //课程点击事件设置
+        ScheduleView scheduleView = findViewById(R.id.ScheduleView);
+        scheduleView.setOnEventClickListener(new ScheduleView.OnEventClickListener() {
+            @Override
+            public void onEventClick(Class_t event) {
+                Log.i(TAG, "onEventClick:"+event.c_name);
+                DetailDialog.showEventDetailDialog(MainActivity.this, event
+                , new DetailDialog.DialogButtonOnClickListener() {
+                    @Override
+                    public void onDelete(Class_t event1){
+                        ClassManager.delete(event1);
+                    }
+
+                    public void onEdit(Class_t event1){
+                        //todo:modify
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -111,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         TextView view_weekHeader = findViewById(R.id.textView_WeekHeader);
         ScheduleView scheduleView = findViewById(R.id.ScheduleView);
         view_weekHeader.setWidth(scheduleView.getWidth());
-        Log.d(TAG, "onWindowFocusChanged: header width:"+view_weekHeader.getWidth());
+        Log.d(TAG, "onWindowFocusChanged: header width:" + view_weekHeader.getWidth());
         //设置初始滚动位置
         ScrollView scrollView = findViewById(R.id.scrollView_main);
         scrollView.scrollTo(0, 1440);
@@ -150,21 +170,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("RestrictedApi")
-    private void showPopupMenu(View view){
+    private void showPopupMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(MainActivity.this, view);
-        popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
+        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
         popupMenu.show();
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if (id==R.id.action_addcourse){
+                if (id == R.id.action_addcourse) {
                     Intent intent = new Intent(MainActivity.this, ClassActivity.class);
                     intent.putExtra("action", ClassActivity.ACTION_INSERT);
                     startActivity(intent);
-                }
-                else if(id==R.id.action_addschedule) {
+                } else if (id == R.id.action_addschedule) {
                     Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
                     intent.putExtra("action", ScheduleActivity.ACTION_INSERT);
                     startActivity(intent);
@@ -175,25 +194,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("RestrictedApi")
-    private void showSettingsMenu(View view){
+    private void showSettingsMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(MainActivity.this, view);
-        popupMenu.getMenuInflater().inflate(R.menu.settings_menu,popupMenu.getMenu());
+        popupMenu.getMenuInflater().inflate(R.menu.settings_menu, popupMenu.getMenu());
         popupMenu.show();
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if (id==R.id.settings_queryClassroom){
+                if (id == R.id.settings_queryClassroom) {
                     Intent intent = new Intent(MainActivity.this, ClassroomQueryActivity.class);
                     startActivity(intent);
-                }
-                else if(id==R.id.settings_queryLibrary) {
+                } else if (id == R.id.settings_queryLibrary) {
                     Intent intent = new Intent(MainActivity.this, LibraryQueryActivity.class);
                     startActivity(intent);
 
-                }
-                else if(id == R.id.settings_others) {
+                } else if (id == R.id.settings_others) {
                     // to do
                 }
                 return false;
@@ -201,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static void showPasswordDialog(Activity activity
+    public static void showEditWeekDialog(Activity activity
             , DialogButtonOnClickListener dialogButtonOnClickListener) {
         @SuppressLint("InflateParams")
         View view = LayoutInflater.from(activity).inflate(R.layout.edit_week,
@@ -224,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
         dialog_editWeek = builder_editWeek.create();
         dialog_editWeek.getWindow().setDimAmount(0.5f);
         dialog_editWeek.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog_editWeek.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         dialog_editWeek.setCanceledOnTouchOutside(true);
         dialog_editWeek.show();
     }

@@ -75,7 +75,7 @@ public class ClassManager {
         db.delete(ClassDBHelper.TABLE_NAME, "c_id" + "=?", new String[]{String.valueOf(id)});
         db.close();
     }
-    public void delete(Class_t myclass) {
+    public static void delete(Class_t myclass) {
         //与数据库建立连接
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -286,7 +286,7 @@ public class ClassManager {
         return true;
     }
 
-    public static void setCurWeek(Integer w){
+    public static void setCurWeek(int w){
         CurWeek = w;
     }
 }

@@ -11,7 +11,12 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
+
+import androidx.core.view.GestureDetectorCompat;
 
 import com.example.Tourbillon.R;
 
@@ -29,7 +34,7 @@ public class ScheduleView extends View {
      */
     private Paint linePaint;
     private float lineSize = 2;
-    private int lineColor ;
+    private int lineColor;
 
     /**
      * 列数，取值5或者7
@@ -52,7 +57,7 @@ public class ScheduleView extends View {
      * 绘制时间轴的信息
      */
     private Paint hourTextPaint;
-//    private Paint hourTextAmPaint;
+    //    private Paint hourTextAmPaint;
     private float hourTextWidth;
     private float hourTextSize;
     private int hourTextColor;
@@ -67,16 +72,6 @@ public class ScheduleView extends View {
     private int currentTimeColor;
     private int currentTimeTextColor;
     private float currentTimeTextSize;
-
-//    /**
-//     * 添加日程的+的样式信息
-//     */
-//    private Paint addPaint;
-//    private int addTextWidth;
-//    private float addTextSize;
-//    private int addTextColor;
-//    private int addBgColor;
-//    private AddRectF addRectF;
 
     /**
      * 事件相关
@@ -94,6 +89,31 @@ public class ScheduleView extends View {
 
     private boolean isFirst;
     private int frameWidth = 2;
+
+    //点击相关
+    private OnEventClickListener onEventClickListener;
+    private GestureDetectorCompat gestureDetectorCompat;
+    private final GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        //public boolean onSingleTapConfirmed(MotionEvent e) {
+        public boolean onDown(MotionEvent e) {
+            Log.d(TAG, "onSingleTapConfirmed");
+            if (eventRectList != null && eventRectList.size() > 0) {
+                for (EventRect eventRect : eventRectList) {
+                    RectF rectF = eventRect.rectF;
+                    if (rectF.contains(e.getX(), e.getY())) {
+                        if (onEventClickListener != null) {
+                            playSoundEffect(SoundEffectConstants.CLICK);
+                            onEventClickListener.onEventClick(eventRect.event);
+                            invalidate();
+                        }
+                        return true;
+                    }
+                }
+            }
+            return true;
+        }
+    };
 
 
     public ScheduleView(Context context) {
@@ -168,16 +188,12 @@ public class ScheduleView extends View {
         endDay.set(Calendar.SECOND, 59);
         firstDay.set(Calendar.MILLISECOND, 1000);
 
-//        /**
-//         * 初始化手势相关
-//         */
-//
-//        gestureDetectorCompat = new GestureDetectorCompat(context, gestureListener);
-//        overScroller = new OverScroller(context);
-//        originOffset = new PointF(0f, 0f);
-//        originOffsetAllDay = new PointF(0f, 0f);
+        /*
+         * 初始化手势相关
+         */
+        gestureDetectorCompat = new GestureDetectorCompat(context, gestureListener);
 
-        /**
+        /*
          * 初始化分隔线画笔
          */
         linePaint = new Paint();
@@ -186,7 +202,7 @@ public class ScheduleView extends View {
         linePaint.setColor(lineColor);
         lineSize = linePaint.getTextSize();
 
-        /**
+        /*
          * 初始化时间轴画笔相关
          */
         hourTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -199,43 +215,26 @@ public class ScheduleView extends View {
 //        hourTextAmPaint.setTextSize(hourTextSize);
 //        hourTextAmPaint.setColor(hourTextColor);
 
-        /**
+        /*
          * 初始化当前时间
          */
         currentTimePaint = new Paint();
         currentTimePaint.setAntiAlias(true);
         currentTimePaint.setTextSize(currentTimeTextSize);
 
-        /**
+        /*
          * 初始化event画笔
          */
         eventTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         eventTextPaint.setColor(eventTextColor);
         eventTextPaint.setTextSize(eventTextSize);
         eventBgPaint = new Paint();
-
-//        /**
-//         * 初始化加号
-//         */
-//        addPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        addPaint.setTextSize(addTextSize);
-//        addPaint.setTextAlign(Paint.Align.CENTER);
-//        Rect rectAddText = new Rect();
-//        addPaint.getTextBounds("+", 0, 1, rectAddText);
-//        addTextWidth = rectAddText.width();
-
-//        scaleAnimationListener = new ScaleAnimationListener();
     }
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        return gestureDetectorCompat.onTouchEvent(event);
-//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        /**
+        /*
          * 计算列的宽度
          */
         if (columnNumber == 1) {
@@ -248,7 +247,6 @@ public class ScheduleView extends View {
         drawHour(canvas);
         drawLine(canvas);
         drawEvents(canvas);
-        drawCurrentTime(canvas);
     }
 
     /**
@@ -296,7 +294,7 @@ public class ScheduleView extends View {
     }
 
     private int getTotalHeight() {
-        return ((int)((rowHeight + lineSize) *24) + 1);
+        return ((int) ((rowHeight + lineSize) * 24) + 1);
     }
 
     private void drawEvents(Canvas canvas) {
@@ -316,7 +314,7 @@ public class ScheduleView extends View {
     }
 
     private void drawText(String text, Canvas canvas, TextPaint textPaint, RectF rectF, int width, float textSize) {
-        Log.d(TAG, "drawText: "+text+width);
+        Log.d(TAG, "drawText: " + text + width);
         final DynamicLayout.Builder builder = DynamicLayout.Builder.obtain(text, textPaint,
                 width)
                 .setAlignment(Layout.Alignment.ALIGN_NORMAL)
@@ -336,48 +334,13 @@ public class ScheduleView extends View {
         canvas.restore();
     }
 
-    private void drawCurrentTime(Canvas canvas) {
-        return;
-//        Calendar today = Calendar.getInstance();
-//        if (today.after(firstDay) && today.before(endDay)) {
-//            int dayNumber = today.get(Calendar.DAY_OF_YEAR) - firstDay.get(Calendar.DAY_OF_YEAR);
-//            int hourNumber = today.get(Calendar.HOUR_OF_DAY);
-//            int minuteNumber = today.get(Calendar.MINUTE);
-//
-//            float leftToday = hourTextWidth + dayNumber * columnWidth + dayNumber * lineSize;
-//            float rightToday = leftToday + columnWidth + lineSize;
-//            float topTodayMinute = hourNumber * (rowHeight + lineSize);
-//            float bottomTodayMinute = topTodayMinute + rowHeight / 60 * minuteNumber;
-//
-//            /**
-//             * 过去的时间的最后就是当前时间
-//             */
-//            currentTimeRect = new RectF(leftToday + 4, bottomTodayMinute - 2, rightToday, bottomTodayMinute);
-//
-//            currentTimePaint.setColor(currentTimeColor);
-//            canvas.drawRect(currentTimeRect, currentTimePaint);
-//
-//            Bitmap arrow = BitmapFactory.decodeResource(getResources(), R.mipmap.scheduleview_current_time_icon);
-//            float width = currentTimePaint.measureText("00:000");
-//            RectF rectF = new RectF(currentTimeRect.left - 4, currentTimeRect.top - currentTimeTextSize / 2 - 2, currentTimeRect.left + width,
-//                    currentTimeRect.bottom + currentTimeTextSize / 2 + 2);
-//            canvas.drawBitmap(arrow, null, rectF, currentTimePaint);
-//
-//            String time = getDataHour(today.getTimeInMillis());
-//            Paint.FontMetrics fontMetrics = currentTimePaint.getFontMetrics();
-//            float baseline = (rectF.bottom + rectF.top - fontMetrics.bottom - fontMetrics.top) / 2 - 1;
-//            currentTimePaint.setColor(currentTimeTextColor);
-//            canvas.drawText(time, rectF.left + 2, baseline, currentTimePaint);
-//        }
-    }
-
     private String getDataHour(long timeStamp) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         String str = format.format(new Date(timeStamp));
         return str;
     }
 
-    /**
+    /*
      * 传入events
      *
      * @param scheduleViewEventList
@@ -391,8 +354,8 @@ public class ScheduleView extends View {
         }
     }
 
-    public void getEventRectList(List<Class_t> scheduleViewEventList){
-        for (int i=0; i<scheduleViewEventList.size(); i++)
+    public void getEventRectList(List<Class_t> scheduleViewEventList) {
+        for (int i = 0; i < scheduleViewEventList.size(); i++)
             eventRectList.add(calculateEventRect(scheduleViewEventList.get(i)));
     }
 
@@ -405,7 +368,7 @@ public class ScheduleView extends View {
         EventRect eventRect = new EventRect();
         eventRect.event = event;
         float width = (columnWidth + lineSize);
-        int dayOfWeek = event.getC_day()-1;
+        int dayOfWeek = event.getC_day() - 1;
         eventRect.rectF.left = hourTextWidth + dayOfWeek * columnWidth + dayOfWeek * lineSize;
         eventRect.rectF.right = eventRect.rectF.left + width;
         /*
@@ -436,7 +399,22 @@ public class ScheduleView extends View {
         }
     }
 
-    public float getHourTextWidth(){
+    public float getHourTextWidth() {
         return hourTextWidth;
+    }
+
+    //触摸事件重载
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.d(TAG, "onTouchEvent: "+event.toString());
+        return gestureDetectorCompat.onTouchEvent(event);
+    }
+
+    public interface OnEventClickListener {
+        void onEventClick(Class_t event);
+    }
+
+    public void setOnEventClickListener(OnEventClickListener onEventClickListener) {
+        this.onEventClickListener = onEventClickListener;
     }
 }
