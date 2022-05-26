@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 public class ClassManager {
+    public static Integer CurWeek;
     public static ClassDBHelper dbHelper;
 
     public ClassManager(Context context) {
@@ -62,10 +63,7 @@ public class ClassManager {
         //插入每一行数据
         long r = db.insert(ClassDBHelper.TABLE_NAME, null, contentValues);
         db.close();
-        if (r != -1)
-            return true;
-        else
-            return false;
+        return r != -1;
     }
 
     /**
@@ -244,6 +242,10 @@ public class ClassManager {
         db.update(ClassDBHelper.TABLE_NAME, contentValues, Class_t.KEY_id + "=?", new String[]{String.valueOf(myclass.c_id)});
         db.close();
         return true;
+    }
+
+    public static void setCurWeek(Integer w){
+        CurWeek = w;
     }
 }
 

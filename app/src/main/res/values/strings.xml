@@ -129,4 +129,6 @@
     </string-array>
     <string name="import_courses">import courses</string>
     <string name="get_courses">get courses</string>
+    <string name="hint_inputWeek">输入当前周：</string>
+    <string name="empty" />
 </resources>

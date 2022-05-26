@@ -2,6 +2,7 @@ package com.example.Tourbillon;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -83,12 +85,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: layout_time");
+                final EditText et = new EditText(MainActivity.this);
+                new AlertDialog.Builder(MainActivity.this).setTitle("输入当前周")
+                        .setIcon(android.R.drawable.sym_def_app_icon)
+                        .setView(et)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //按下确定键后的事件
+                                Toast.makeText(getApplicationContext(), et.getText().toString(),Toast.LENGTH_LONG).show();
+                            }
+                        }).setNegativeButton("取消",null).show();
             }
         });
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        //可以获得窗口大小，防止需要计算大小的函数
         super.onWindowFocusChanged(hasFocus);
         Log.d(TAG, "onWindowFocusChanged: ");
         drawClassBoxes();
