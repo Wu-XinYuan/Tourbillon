@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 public class ClassManager {
-    public static Integer CurWeek;
+    public static int CurWeek = 13;
     public static ClassDBHelper dbHelper;
 
     public ClassManager(Context context) {
@@ -196,15 +196,57 @@ public class ClassManager {
 
         while (!cursor.isAfterLast()) { // 游标只要不是在最后一行之后，就一直循环
             Log.i(TAG, "query: ");
-            if (!cursor.getString(cursor.getColumnIndex("c_day")).equals("0")) {
-                Class_t Class = new Class_t();
+            Class_t Class = new Class_t();
+            String name = cursor.getString(cursor.getColumnIndex("c_name"));
+            Class.setC_id(cursor.getString(cursor.getColumnIndex("c_id")));
+            Class.setC_name(name);
+            Class.setC_time(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_time"))));
+            Class.setC_startWeek(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_startWeek"))));
+            Class.setC_endWeek(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_endWeek"))));
+            Class.setC_duration(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_duration"))));
+            Class.setC_day(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_day"))));
+            Class.setC_room(cursor.getString(cursor.getColumnIndex("c_room")));
+            Class.setC_teacher(cursor.getString(cursor.getColumnIndex("c_teacher")));
+            int seed = ((int) name.charAt(0)) % 7;
+            Class.setColor(Color.parseColor(pleasantColors[seed]));
+            classes.add(Class);
+            // 将游标移到下一行
+            cursor.moveToNext();
 
-                String name = cursor.getString(cursor.getColumnIndex("c_name"));
+        }
+
+        cursor.close();
+        return classes;
+    }
+
+
+    @SuppressLint("Range")
+    public static List<Class_t> getCurrentWeekClasses() {
+        // 与query类似，只返回当前周课程
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = " select " + Class_t.KEY_id + "," + Class_t.COLUMN_name +
+                "," + Class_t.COLUMN_time + "," + Class_t.COLUMN_duration +
+                "," + Class_t.COLUMN_startw + "," + Class_t.COLUMN_endw +
+                "," + Class_t.COLUMN_day + "," + Class_t.COLUMN_room + "," + Class_t.COLUMN_teacher +
+                " from " + ClassDBHelper.TABLE_NAME;
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(sql, null);
+        List<Class_t> classes = new ArrayList<>();
+
+        // 将游标移到开头
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) { // 游标只要不是在最后一行之后，就一直循环
+            Log.i(TAG, "getCurrentWeekClasses: ");
+            String name = cursor.getString(cursor.getColumnIndex("c_name"));
+            int startWeek = Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_startWeek")));
+            int endWeek = Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_endWeek")));
+            if (startWeek < CurWeek && endWeek > CurWeek) {
+                Class_t Class = new Class_t();
                 Class.setC_id(cursor.getString(cursor.getColumnIndex("c_id")));
                 Class.setC_name(name);
                 Class.setC_time(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_time"))));
-                Class.setC_startWeek(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_startWeek"))));
-                Class.setC_endWeek(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_endWeek"))));
+                Class.setC_startWeek(startWeek);
+                Class.setC_endWeek(endWeek);
                 Class.setC_duration(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_duration"))));
                 Class.setC_day(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_day"))));
                 Class.setC_room(cursor.getString(cursor.getColumnIndex("c_room")));

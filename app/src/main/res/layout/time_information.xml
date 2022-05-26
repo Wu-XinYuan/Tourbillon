@@ -20,9 +20,10 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/TextView_Week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="第13周 周五"
+            android:text="第13周"
             android:textSize="15sp" />
     </LinearLayout>
 

@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/return2app"
+        android:backgroundTint="@color/colorButton"
         app:layout_constraintEnd_toEndOf="@+id/query_class"
         app:layout_constraintBottom_toBottomOf="@+id/query_class" />
 

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton add;
     ImageButton button_setting;
     public static Date curDate;
+    private static AlertDialog dialog_editWeek;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,23 +84,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        linearLayout_Time.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: layout_time");
-                final EditText et = new EditText(MainActivity.this);
-                new AlertDialog.Builder(MainActivity.this).setTitle("输入当前周")
-                        .setIcon(android.R.drawable.sym_def_app_icon)
-                        .setView(et)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //按下确定键后的事件
-                                Toast.makeText(getApplicationContext(), et.getText().toString(),Toast.LENGTH_LONG).show();
-                            }
-                        }).setNegativeButton("取消",null).show();
-            }
-        });
+        linearLayout_Time.setOnClickListener(view -> showPasswordDialog(MainActivity.this
+                , new DialogButtonOnClickListener() {
+                    @Override
+                    public void onPositive(String Week) {
+                        int week = Integer.parseInt(Week);
+                        if (week>0 && week< 21)
+                            ClassManager.CurWeek = week;
+                            TextView curweek = findViewById(R.id.TextView_Week);
+                            curweek.setText("第"+week + "周");
+                    }
+
+                    @Override
+                    public void onNegative() {
+                        //Execute when cancel is pressed
+                    }
+                }));
     }
 
     @Override
@@ -135,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void drawClassBoxes() {
         //从数据库拿到课程数据保存在链表
-        List<Class_t> classes = classOp.query();
+        List<Class_t> classes = classOp.getCurrentWeekClasses();
         ScheduleView scheduleView = findViewById(R.id.ScheduleView);
         scheduleView.setEvents(classes);
     }
@@ -197,5 +199,32 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    public static void showPasswordDialog(Activity activity
+            , DialogButtonOnClickListener dialogButtonOnClickListener) {
+        @SuppressLint("InflateParams")
+        View view = LayoutInflater.from(activity).inflate(R.layout.edit_week,
+                null);
+        Button button_confirm = view.findViewById(R.id.button_dialog_confirm);
+        Button button_cancel = view.findViewById(R.id.button_dialog_cancel);
+        TextView textView_title = view.findViewById(R.id.textView_dialog_title);
+        EditText textView_message = view.findViewById(R.id.textView_dialog_message);
+        button_confirm.setOnClickListener(view12 -> {
+            dialogButtonOnClickListener.onPositive(textView_message.getText().toString().trim());
+            dialog_editWeek.dismiss();
+        });
+        button_cancel.setOnClickListener(view1 -> {
+            dialogButtonOnClickListener.onNegative();
+            dialog_editWeek.dismiss();
+        });
+        AlertDialog.Builder builder_editWeek = new AlertDialog.Builder(activity, R.style.dialog);
+        builder_editWeek.setView(view);
+        builder_editWeek.setCancelable(true);
+        dialog_editWeek = builder_editWeek.create();
+        dialog_editWeek.getWindow().setDimAmount(0.5f);
+        dialog_editWeek.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog_editWeek.setCanceledOnTouchOutside(true);
+        dialog_editWeek.show();
     }
 }
