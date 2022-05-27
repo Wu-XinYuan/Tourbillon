@@ -76,7 +76,10 @@ public class ClassActivity extends AppCompatActivity {
             isWeekSelected[week - 1] = true;
             course = new Class_t();
         } else if (action == ACTION_DETAIL) {
-            //course = classOp.query();
+            day = intent.getIntExtra("day", 1);
+            start = intent.getIntExtra("time", 1);
+            int week = intent.getIntExtra("startweek", 1);
+            course = classOp.query(week,day,start);
         }
         actionChange();
         refreshTextViewAfterDialog();

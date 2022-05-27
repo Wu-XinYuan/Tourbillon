@@ -80,8 +80,8 @@ public class ClassManager {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         db.delete(ClassDBHelper.TABLE_NAME,
-                Class_t.COLUMN_startw + "=?" +
-                        Class_t.COLUMN_day + "=?" +
+                Class_t.COLUMN_startw + "=? and " +
+                        Class_t.COLUMN_day + "=? and " +
                         Class_t.COLUMN_time + "=?",
                         new String[]{String.valueOf(myclass.c_startWeek),
                                 String.valueOf(myclass.c_day),
@@ -136,14 +136,15 @@ public class ClassManager {
         return myclass;
     }
 
-    public Class_t getClassById(int week, int day, int time) {
+    public static Class_t query(int week, int day, int time) {
         //与数据库建立连接
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = " select " + Class_t.COLUMN_name + "," + Class_t.COLUMN_time +
                 "," + Class_t.COLUMN_duration + "," + Class_t.COLUMN_startw +
                 "," + Class_t.COLUMN_endw + "," + Class_t.COLUMN_day +
                 "," + Class_t.COLUMN_detail +
-                " from " + ClassDBHelper.TABLE_NAME + " where " + Class_t.KEY_id + "=?";
+                " from " + ClassDBHelper.TABLE_NAME + " where " + Class_t.COLUMN_startw + "=? and " +
+                Class_t.COLUMN_time + "=? and " + Class_t.COLUMN_day + "=?";
         Class_t myclass = new Class_t();
         Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(week),String.valueOf(day),String.valueOf(time)});
         while (cursor.moveToNext()) {
@@ -156,6 +157,7 @@ public class ClassManager {
             int t = cursor.getColumnIndex(Class_t.COLUMN_day);
             int m = cursor.getColumnIndex(Class_t.COLUMN_room);
             int n = cursor.getColumnIndex(Class_t.COLUMN_teacher);
+            int a = cursor.getColumnIndex(Class_t.COLUMN_detail);
             if(i >= 0)
                 myclass.c_id = cursor.getString(i);
             if(j >= 0)
@@ -174,6 +176,8 @@ public class ClassManager {
                 myclass.c_room = cursor.getString(m);
             if(n >= 0)
                 myclass.c_teacher = cursor.getString(n);
+            if(a >= 0)
+                myclass.c_detail = cursor.getString(a);
         }
         cursor.close();
         db.close();
