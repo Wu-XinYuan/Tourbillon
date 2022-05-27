@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class ClassDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION=1;
+    private static final int DATABASE_VERSION=7;
     public static final String TABLE_NAME = "classes_db";
     public ClassDBHelper(Context context ) { super(context, TABLE_NAME, null, DATABASE_VERSION);}
 
@@ -25,7 +25,10 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 " c_endWeek Integer," +
                 " c_day Integer," +
                 " c_room varchar(50)," +
-                " c_teacher varchar(50))");
+                " c_teacher varchar(50),"+
+                " c_detail varchar(50)," +
+                " c_weekCode varchar(50)," +
+                " c_isClass Boolean)");
     }
 
     /**

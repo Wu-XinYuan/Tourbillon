@@ -406,7 +406,7 @@ public class ScheduleView extends View {
     //触摸事件重载
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(TAG, "onTouchEvent: "+event.toString());
+        //Log.d(TAG, "onTouchEvent: "+event.toString());
         return gestureDetectorCompat.onTouchEvent(event);
     }
 
