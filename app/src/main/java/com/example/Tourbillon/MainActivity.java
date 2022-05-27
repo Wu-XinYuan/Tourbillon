@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -106,18 +107,42 @@ public class MainActivity extends AppCompatActivity {
         scheduleView.setOnEventClickListener(new ScheduleView.OnEventClickListener() {
             @Override
             public void onEventClick(Class_t event) {
-                Log.i(TAG, "onEventClick:"+event.c_name);
-                DetailDialog.showEventDetailDialog(MainActivity.this, event
-                , new DetailDialog.DialogButtonOnClickListener() {
-                    @Override
-                    public void onDelete(Class_t event1){
-                        ClassManager.delete(event1);
-                    }
+                if(event.c_isclass){
+                    Log.i(TAG, "onEventClick:"+event.c_name);
+                    DetailDialog.showEventDetailDialog(MainActivity.this, event
+                            , new DetailDialog.DialogButtonOnClickListener() {
+                                @Override
+                                public void onDelete(Class_t event1){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setMessage("确定删除？");
+                                    builder.setTitle("提示");
 
-                    public void onEdit(Class_t event1){
-                        //todo:modify
-                    }
-                });
+                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int which) {
+                                            ClassManager.delete(event1);
+                                        }
+                                    });
+                                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int which) {
+                                        }
+                                    });
+                                    builder.create().show();
+                                }
+
+                                public void onEdit(Class_t event1){
+                                    //todo:modify
+                                    Intent intent = new Intent(MainActivity.this, ClassActivity.class);
+                                    intent.putExtra("action", ClassActivity.ACTION_DETAIL);
+                                    intent.putExtra("startweek",event1.getC_startWeek() );
+                                    intent.putExtra("time",event1.getC_time());
+                                    intent.putExtra("day",event1.getC_day());
+                                    startActivity(intent);
+                                }
+                            });
+                }
+
             }
         });
     }
