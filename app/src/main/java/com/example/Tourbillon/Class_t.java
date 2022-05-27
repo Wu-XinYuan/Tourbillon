@@ -1,5 +1,4 @@
 package com.example.Tourbillon;
-import com.example.Tourbillon.R;
 
 public class Class_t {
     public static final int MAX_STEPS = 14;
@@ -15,8 +14,8 @@ public class Class_t {
     public static final String COLUMN_room = "c_room";
     public static final String COLUMN_teacher = "c_teacher";
     public static final String COLUMN_detail = "c_detail";
-    public static final String COLUMN_isclass = "c_isclass";
-    public static final String COLUMN_weekcode = "weekCode";
+    public static final String COLUMN_isclass = "c_isClass";
+    public static final String COLUMN_weekcode = "c_weekCode";
 
     public String c_id;
     public String c_name;
@@ -28,8 +27,8 @@ public class Class_t {
     public String c_room;
     public String c_teacher;
     public String c_detail;  //备注
-    private String weekCode;
-    public boolean c_isclass = true;
+    private String weekCode = "000000000000000000";
+    public boolean c_isClass = true;
     private int contentColor;
     private String[] start_times = {"8:00", "8:55", "10:00", "10:55", "12:00", "12:55", "14:00", "14:55", "16:00", "16:55", "18:00", "18:55", "19:45", "20:30"};
     private String [] end_times = {"8:45", "9:40", "10:45", "11:40", "12:45", "13:40", "14:45", "15:40", "16:45", "17:40", "18:45", "19:40", "20:20", "21:20"};
@@ -148,6 +147,14 @@ public class Class_t {
 
     public void setC_detail(String detail) {
         this.c_detail = detail;
+    }
+
+    public boolean getC_isClass(){
+        return c_isClass;
+    }
+
+    public void setC_isClass(boolean isClass) {
+        this.c_isClass = isClass;
     }
 
     public String getWeekCode() {

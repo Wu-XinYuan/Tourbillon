@@ -3,6 +3,7 @@ package com.example.Tourbillon;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -16,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 import java.util.Arrays;
 
 public class ClassActivity extends AppCompatActivity {
-    final ClassManager classOp = new ClassManager(ClassActivity.this);
     public static final int ACTION_INSERT = 0;
     public static final int ACTION_MODIFY = 1;
     public static final int ACTION_DETAIL = 2;
@@ -79,7 +79,7 @@ public class ClassActivity extends AppCompatActivity {
             day = intent.getIntExtra("day", 1);
             start = intent.getIntExtra("time", 1);
             int week = intent.getIntExtra("startweek", 1);
-            course = classOp.query(week,day,start);
+            course = ClassManager.query(week,day,start);
         }
         actionChange();
         refreshTextViewAfterDialog();
@@ -111,7 +111,7 @@ public class ClassActivity extends AppCompatActivity {
         endItems = new String[Class_t.MAX_STEPS - start + 1];
         for (int i = start; i <= Class_t.MAX_STEPS; i++)
             endItems[i - start] = String.format(getString(R.string.period), String.valueOf(i));
-
+        Log.d("ClassActivity", "checkCourse: "+course.c_name);
         tvStart.setText(startItems[start - 1]);
         tvDay.setText(dayItems[day - 1]);
         tvEnd.setText(endItems[end - start]);
@@ -223,9 +223,9 @@ public class ClassActivity extends AppCompatActivity {
         course.setC_room(etLocation.getText().toString().trim());
         course.setC_detail(etNote.getText().toString().trim());
         if(insert)
-            return classOp.insert(course);
+            return ClassManager.insert(course);
         else
-            return classOp.update(course);
+            return ClassManager.update(course);
     }
 
 
@@ -234,7 +234,7 @@ public class ClassActivity extends AppCompatActivity {
         builder.setTitle(getString(R.string.warning))
                 .setMessage(String.format(getString(R.string.sure_to_delete), course.getC_name()))
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
-                    classOp.delete(course);//delete函数要改
+                    ClassManager.delete(course);//delete函数要改
                     finish();
                 })
                 .setNegativeButton(R.string.cancel, null);

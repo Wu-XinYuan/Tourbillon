@@ -4,18 +4,11 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,10 +23,8 @@ import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.text.SimpleDateFormat;
 
 public class MainActivity extends AppCompatActivity {
@@ -107,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         scheduleView.setOnEventClickListener(new ScheduleView.OnEventClickListener() {
             @Override
             public void onEventClick(Class_t event) {
-                if(event.c_isclass){
+                if(event.c_isClass){
                     Log.i(TAG, "onEventClick:"+event.c_name);
                     DetailDialog.showEventDetailDialog(MainActivity.this, event
                             , new DetailDialog.DialogButtonOnClickListener() {

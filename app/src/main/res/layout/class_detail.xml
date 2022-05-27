@@ -15,18 +15,45 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/TextView_eventDetail_Name"
+            android:id="@+id/TextView_classDetail_ClassName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:layout_margin="10dp"/>
 
         <TextView
-            android:id="@+id/TextView_eventDetail_Time"
+            android:id="@+id/TextView_classDetail_Week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:drawableLeftCompat="@drawable/ic_baseline_calendar_today_24"
+            android:drawablePadding="10dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/TextView_classDetail_Time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             app:drawableLeftCompat="@drawable/ic_baseline_access_time_24"
+            android:drawablePadding="10dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/TextView_classDetail_Teacher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:drawableLeftCompat="@drawable/ic_baseline_perm_identity_24"
+            android:drawablePadding="10dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/TextView_classDetail_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
             android:drawablePadding="10dp"
             android:layout_margin="10dp"/>
 
@@ -37,7 +64,7 @@
             android:layout_marginVertical="20dp">
 
             <ImageButton
-                android:id="@+id/button_eventDetail_delete"
+                android:id="@+id/button_classDetail_delete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -45,7 +72,7 @@
                 android:src="@drawable/ic_baseline_delete_24" />
 
             <ImageButton
-                android:id="@+id/button_eventDetail_edit"
+                android:id="@+id/button_classDetail_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

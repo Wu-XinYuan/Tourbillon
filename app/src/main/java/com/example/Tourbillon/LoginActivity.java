@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Call;
@@ -144,7 +145,10 @@ public class LoginActivity extends AppCompatActivity {
                 String week = jsonCourse.getString("zcd").substring(0, jsonCourse.getString("zcd").length() - 1);
                 String [] weeks = week.split("-");
                 course.setC_startWeek(Integer.parseInt(weeks[0]));
-                course.setC_endWeek(Integer.parseInt(weeks[1]));
+                if (weeks.length == 1)
+                    course.setC_endWeek(Integer.parseInt(weeks[0]));
+                else
+                    course.setC_endWeek(Integer.parseInt(weeks[1]));
                 course.setC_detail(jsonCourse.getString("xkbz"));
                 courses.add(course);
                 ClassManager.insert(course);

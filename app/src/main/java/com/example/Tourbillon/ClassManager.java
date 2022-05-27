@@ -28,22 +28,37 @@ public class ClassManager {
     /**
      * 插入数据
      */
-    public static void insertData(String id, String name, Integer time, Integer duration, Integer startWeek, Integer endWeek, Integer day, String room, String teacher) {
+    public static void insertData(String id, String name, Integer time, Integer duration, Integer startWeek,
+                                  Integer endWeek, Integer day, String room, String teacher, String detail,
+                                  String weekCode, Boolean isClass) {
         // 实际上是更新，为了保存顺序
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Log.i(TAG, "insertData" + id + name);
         ContentValues contentValues = new ContentValues();
-        contentValues.put("c_id", id);
-        contentValues.put("c_name", name);
-        contentValues.put("c_time", time);
-        contentValues.put("c_duration", duration);
-        contentValues.put("c_startWeek", startWeek);
-        contentValues.put("c_endWeek", endWeek);
-        contentValues.put("c_day", day);
-        contentValues.put("c_room", room);
-        contentValues.put("c_teacher", teacher);
+        contentValues.put(Class_t.KEY_id, id);
+        contentValues.put(Class_t.COLUMN_name, name);
+        contentValues.put(Class_t.COLUMN_time, time);
+        contentValues.put(Class_t.COLUMN_duration, duration);
+        contentValues.put(Class_t.COLUMN_startw, startWeek);
+        contentValues.put(Class_t.COLUMN_endw, endWeek);
+        contentValues.put(Class_t.COLUMN_day, day);
+        contentValues.put(Class_t.COLUMN_room, room);
+        contentValues.put(Class_t.COLUMN_teacher, teacher);
+        contentValues.put(Class_t.COLUMN_detail, detail);
+        contentValues.put(Class_t.COLUMN_isclass, isClass);
+        contentValues.put(Class_t.COLUMN_weekcode, weekCode);
         long r = db.insert(ClassDBHelper.TABLE_NAME, null, contentValues);
         db.close();
+    }
+
+    public static void insertData(String id, String name, Integer time, Integer duration, Integer startWeek,
+                                  Integer endWeek, Integer day, String room, String teacher) {
+        char[] weekCodeArray = new char[18];
+        for (int i=0; i<18; ++i)
+            weekCodeArray[i] = '0';
+        for (int i=startWeek; i<=endWeek; ++i)
+            weekCodeArray[i] = '1';
+        insertData(id, name, time, duration, startWeek, endWeek, day, room, teacher, null,  new String(weekCodeArray), true);
     }
 
     public static boolean insert(Class_t myclass) {
@@ -51,15 +66,18 @@ public class ClassManager {
         Log.d("insert_class", "insert by Class_t: " + myclass.getC_name());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("c_id", myclass.getC_id());
-        contentValues.put("c_name", myclass.getC_name());
-        contentValues.put("c_time", myclass.getC_time());
-        contentValues.put("c_duration", myclass.getC_duration());
-        contentValues.put("c_startWeek", myclass.getC_startWeek());
-        contentValues.put("c_endWeek", myclass.getC_endWeek());
-        contentValues.put("c_day", myclass.getC_day());
-        contentValues.put("c_room", myclass.getC_room());
-        contentValues.put("c_teacher", myclass.getC_teacher());
+        contentValues.put(Class_t.KEY_id, myclass.getC_id());
+        contentValues.put(Class_t.COLUMN_name, myclass.getC_name());
+        contentValues.put(Class_t.COLUMN_time, myclass.getC_time());
+        contentValues.put(Class_t.COLUMN_duration, myclass.getC_duration());
+        contentValues.put(Class_t.COLUMN_startw, myclass.getC_startWeek());
+        contentValues.put(Class_t.COLUMN_endw, myclass.getC_endWeek());
+        contentValues.put(Class_t.COLUMN_day, myclass.getC_day());
+        contentValues.put(Class_t.COLUMN_room, myclass.getC_room());
+        contentValues.put(Class_t.COLUMN_teacher, myclass.getC_teacher());
+        contentValues.put(Class_t.COLUMN_detail, myclass.getC_detail());
+        contentValues.put(Class_t.COLUMN_isclass, myclass.getC_isClass());
+        contentValues.put(Class_t.COLUMN_weekcode, myclass.getWeekCode());
         //插入每一行数据
         long r = db.insert(ClassDBHelper.TABLE_NAME, null, contentValues);
         db.close();
@@ -138,6 +156,7 @@ public class ClassManager {
 
     public static Class_t query(int week, int day, int time) {
         //与数据库建立连接
+        Log.d(TAG, "query: "+week + ' '+ day+' '+time);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = " select " + Class_t.COLUMN_name + "," + Class_t.COLUMN_time +
                 "," + Class_t.COLUMN_duration + "," + Class_t.COLUMN_startw +
@@ -146,8 +165,9 @@ public class ClassManager {
                 " from " + ClassDBHelper.TABLE_NAME + " where " + Class_t.COLUMN_startw + "=? and " +
                 Class_t.COLUMN_time + "=? and " + Class_t.COLUMN_day + "=?";
         Class_t myclass = new Class_t();
-        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(week),String.valueOf(day),String.valueOf(time)});
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(week),String.valueOf(time),String.valueOf(day)});
         while (cursor.moveToNext()) {
+            Log.d(TAG, "query: ");
             int i = cursor.getColumnIndex(Class_t.KEY_id);
             int j = cursor.getColumnIndex(Class_t.COLUMN_name);
             int k = cursor.getColumnIndex(Class_t.COLUMN_time);
