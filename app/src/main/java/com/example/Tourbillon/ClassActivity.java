@@ -222,6 +222,7 @@ public class ClassActivity extends AppCompatActivity {
         course.setC_day(day);
         course.setC_room(etLocation.getText().toString().trim());
         course.setC_detail(etNote.getText().toString().trim());
+        course.setC_isClass(true);
         if(insert)
             return ClassManager.insert(course);
         else
@@ -234,7 +235,7 @@ public class ClassActivity extends AppCompatActivity {
         builder.setTitle(getString(R.string.warning))
                 .setMessage(String.format(getString(R.string.sure_to_delete), course.getC_name()))
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
-                    ClassManager.delete(course);//delete函数要改
+                    ClassManager.delete(course);
                     finish();
                 })
                 .setNegativeButton(R.string.cancel, null);

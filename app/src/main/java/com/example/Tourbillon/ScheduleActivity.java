@@ -75,7 +75,10 @@ public class ScheduleActivity extends AppCompatActivity {
             isWeekSelected[week - 1] = true;
             course = new Class_t();
         } else if (action == ACTION_DETAIL) {
-            //course = classOp.query(...);
+            day = intent.getIntExtra("day", 1);
+            start = intent.getIntExtra("time", 1);
+            int week = intent.getIntExtra("startweek", 1);
+            course = ClassManager.query(week,day,start);
         }
         actionChange();
         refreshTextViewAfterDialog();
@@ -89,6 +92,7 @@ public class ScheduleActivity extends AppCompatActivity {
             start = course.c_time;
             step = course.c_duration;
             end = start + step - 1;
+            weekCode = course.getWeekCode().toCharArray();
             for (int i = course.c_startWeek; i < course.c_endWeek; i++) {
                 isWeekSelected[i] = weekCode[i] == '1';
             }
@@ -205,14 +209,15 @@ public class ScheduleActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.please_select_period), Toast.LENGTH_SHORT).show();
             return false;
         }
-        course.c_name = etSchedule.getText().toString().trim();
-        course.c_time= start;
-        course.c_duration=step;
-        course.c_day=day;
-        course.c_detail=etDetail.getText().toString().trim();
-        //如果week不是一个范围那这里要改
-        course.c_startWeek=weekCode[0];
-        course.c_endWeek=weekCode[weekCode.length-1];
+        course.setC_name(etSchedule.getText().toString().trim());
+        course.setC_time(start);
+        course.setC_duration(step);
+        course.setC_day(day);
+        course.setC_detail(etDetail.getText().toString().trim());
+        course.setWeekCode(new String(weekCode));
+        course.setC_startWeek(weekCode[0]);
+        course.setC_endWeek(weekCode[weekCode.length-1]);
+        course.setC_isClass(false);
         if(insert)
             return classOp.insert(course);
         else
