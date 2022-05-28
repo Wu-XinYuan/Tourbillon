@@ -3,6 +3,7 @@ package com.example.Tourbillon;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -31,7 +32,7 @@ public class ScheduleActivity extends AppCompatActivity {
     private int step;
     private String[] dayItems;
     private String[] endItems;
-    private char[] weekCode = new char[Class_t.MAX_WEEKS];
+    private char[] weekCode = "000000000000000000".toCharArray();
     private int action;
     private Class_t course;
 
@@ -228,7 +229,7 @@ public class ScheduleActivity extends AppCompatActivity {
     private void deleteCourse() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.warning))
-                .setMessage(String.format(getString(R.string.sure_to_delete), course.c_name))
+                .setMessage(String.format(getString(R.string.sure_to_delete), course.getC_name()))
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
                     classOp.delete(course);
                     finish();

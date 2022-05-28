@@ -1,7 +1,4 @@
 package com.example.Tourbillon;
-
-import static android.content.ContentValues.TAG;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -16,14 +13,15 @@ import java.util.List;
 import java.util.Random;
 
 public class ClassManager {
-    public static int CurWeek = 13;
+    private static final String TAG = "ClassManager";
+    public static int CurWeek = 16;
     public static ClassDBHelper dbHelper;
 
     public ClassManager(Context context) {
         dbHelper = new ClassDBHelper(context);
     }
 
-    public static final String[] pleasantColors = {"#9FFC6472", "#9FF4B2A6", "#9FECCDB3", "#9FBCEFD0", "#9FA1E8E4", "#9F23C8B2", "#9FC3ACEE"};
+    public static final String[] pleasantColors = {"#7FFC6472", "#7FF4B2A6", "#7FECCDB3", "#7FBCEFD0", "#7FA1E8E4", "#7F23C8B2", "#7FC3ACEE"};
 
     /**
      * 插入数据
@@ -57,7 +55,7 @@ public class ClassManager {
         for (int i=0; i<18; ++i)
             weekCodeArray[i] = '0';
         for (int i=startWeek; i<=endWeek; ++i)
-            weekCodeArray[i] = '1';
+            weekCodeArray[i-1] = '1';
         insertData(id, name, time, duration, startWeek, endWeek, day, room, teacher, null,  new String(weekCodeArray), true);
     }
 
@@ -251,20 +249,26 @@ public class ClassManager {
         String sql = " select " + Class_t.KEY_id + "," + Class_t.COLUMN_name +
                 "," + Class_t.COLUMN_time + "," + Class_t.COLUMN_duration +
                 "," + Class_t.COLUMN_startw + "," + Class_t.COLUMN_endw +
-                "," + Class_t.COLUMN_day + "," + Class_t.COLUMN_room + "," + Class_t.COLUMN_teacher +
+                "," + Class_t.COLUMN_day + "," + Class_t.COLUMN_room +
+                "," + Class_t.COLUMN_teacher + "," + Class_t.COLUMN_isclass +
+                "," + Class_t.COLUMN_weekcode +
                 " from " + ClassDBHelper.TABLE_NAME;
         @SuppressLint("Recycle") Cursor cursor = db.rawQuery(sql, null);
         List<Class_t> classes = new ArrayList<>();
 
         // 将游标移到开头
         cursor.moveToFirst();
-
+        int seed = 0;
         while (!cursor.isAfterLast()) { // 游标只要不是在最后一行之后，就一直循环
-            Log.i(TAG, "getCurrentWeekClasses: ");
             String name = cursor.getString(cursor.getColumnIndex("c_name"));
+            boolean isClass = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Class_t.COLUMN_isclass)))>0;
+            String weekCodeString = cursor.getString(cursor.getColumnIndex(Class_t.COLUMN_weekcode));
+            char [] weekCode = weekCodeString.toCharArray();
             int startWeek = Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_startWeek")));
             int endWeek = Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_endWeek")));
-            if (startWeek < CurWeek && endWeek > CurWeek) {
+            Log.i(TAG, "getCurrentWeekClasses: "+name+' '+isClass+' '+weekCodeString);
+            if ((isClass && startWeek <= CurWeek && endWeek >= CurWeek) || (!isClass && weekCode[CurWeek]=='1')) {
+                seed++;
                 Class_t Class = new Class_t();
                 Class.setC_id(cursor.getString(cursor.getColumnIndex("c_id")));
                 Class.setC_name(name);
@@ -275,8 +279,9 @@ public class ClassManager {
                 Class.setC_day(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_day"))));
                 Class.setC_room(cursor.getString(cursor.getColumnIndex("c_room")));
                 Class.setC_teacher(cursor.getString(cursor.getColumnIndex("c_teacher")));
-                int seed = ((int) name.charAt(0)) % 7;
-                Class.setColor(Color.parseColor(pleasantColors[seed]));
+                Class.setC_isClass(isClass);
+                Class.setWeekCode(weekCodeString);
+                Class.setColor(Color.parseColor(pleasantColors[seed%7]));
                 classes.add(Class);
             }
             // 将游标移到下一行
@@ -314,6 +319,10 @@ public class ClassManager {
 
     public static void setCurWeek(int w){
         CurWeek = w;
+    }
+
+    public static int getCurWeek(){
+        return CurWeek;
     }
 }
 

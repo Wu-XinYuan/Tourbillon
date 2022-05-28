@@ -2,8 +2,10 @@ package com.example.Tourbillon;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,14 +64,16 @@ public class DetailDialog {
             dialog_detail.dismiss();
         });
 
-        AlertDialog.Builder builder_editWeek = new AlertDialog.Builder(activity, R.style.dialog);
-        builder_editWeek.setView(view);
-        builder_editWeek.setCancelable(true);
-        dialog_detail = builder_editWeek.create();
-        dialog_detail.getWindow().setDimAmount(0.5f);
-        dialog_detail.getWindow().setBackgroundDrawableResource(android.R.color.white);
-        dialog_detail.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        AlertDialog.Builder builder_detail = new AlertDialog.Builder(activity);
+        dialog_detail = builder_detail.create();
         dialog_detail.setCanceledOnTouchOutside(true);
+        dialog_detail.setCancelable(true);
         dialog_detail.show();
+        Window window = dialog_detail.getWindow();
+        window.setBackgroundDrawable(new BitmapDrawable());
+        window.setContentView(view);
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.width = 1000;
+        window.setAttributes(attributes);
     }
 }

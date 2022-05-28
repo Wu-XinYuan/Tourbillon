@@ -38,14 +38,16 @@ public class Class_t {
     public String toString() {
         return "Classes{" +
                 "c_id=" + c_id +
-                ", c_name='" + c_name + '\'' +
-                ", c_time='" + c_time + '\'' +
-                ", c_duration='" + c_duration + '\'' +
-                ", c_startWeek='" + c_startWeek + '\'' +
-                ", c_endWeek='" + c_endWeek + '\'' +
-                ", c_day='" + c_day + '\'' +
-                ", c_room='" + c_room + '\'' +
-                ", c_teacher='" + c_teacher + '\'' +
+                ", c_name=" + c_name + '\'' +
+                ", c_time=" + c_time + '\'' +
+                ", c_duration=" + c_duration + '\'' +
+                ", c_startWeek=" + c_startWeek + '\'' +
+                ", c_endWeek=" + c_endWeek + '\'' +
+                ", c_day=" + c_day + '\'' +
+                ", c_room=" + c_room + '\'' +
+                ", c_teacher=" + c_teacher + '\'' +
+                ", c_isClass=" + c_isClass + '\'' +
+                ", c_weekCode=" + weekCode + '\'' +
                 '}';
     }
 
