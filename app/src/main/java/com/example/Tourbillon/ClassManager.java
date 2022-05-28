@@ -304,6 +304,8 @@ public class ClassManager {
         contentValues.put("c_day", myclass.getC_day());
         contentValues.put("c_room", myclass.getC_room());
         contentValues.put("c_teacher", myclass.getC_teacher());
+        contentValues.put("c_weekCode", myclass.getWeekCode());
+        contentValues.put("c_detail", myclass.getC_detail());
 
         db.update(ClassDBHelper.TABLE_NAME, contentValues, Class_t.KEY_id + "=?", new String[]{String.valueOf(myclass.c_id)});
         db.close();

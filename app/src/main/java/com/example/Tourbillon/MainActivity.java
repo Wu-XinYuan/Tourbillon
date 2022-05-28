@@ -98,42 +98,49 @@ public class MainActivity extends AppCompatActivity {
         scheduleView.setOnEventClickListener(new ScheduleView.OnEventClickListener() {
             @Override
             public void onEventClick(Class_t event) {
-                if(event.c_isClass){
-                    Log.i(TAG, "onEventClick:"+event.c_name);
-                    DetailDialog.showEventDetailDialog(MainActivity.this, event
-                            , new DetailDialog.DialogButtonOnClickListener() {
+                Log.i(TAG, "onEventClick:"+event.c_name);
+                DetailDialog.showEventDetailDialog(MainActivity.this, event
+                        , new DetailDialog.DialogButtonOnClickListener() {
+                        @Override
+                        public void onDelete(Class_t event1){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setMessage(getString(R.string.sure_to_delete));
+                            builder.setTitle(getString(R.string.warning));
+
+                            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onDelete(Class_t event1){
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                    builder.setMessage("确定删除？");
-                                    builder.setTitle("提示");
-
-                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int which) {
-                                            ClassManager.delete(event1);
-                                        }
-                                    });
-                                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int which) {
-                                        }
-                                    });
-                                    builder.create().show();
-                                }
-
-                                public void onEdit(Class_t event1){
-                                    //todo:modify
-                                    Intent intent = new Intent(MainActivity.this, ClassActivity.class);
-                                    intent.putExtra("action", ClassActivity.ACTION_DETAIL);
-                                    intent.putExtra("startweek",event1.getC_startWeek() );
-                                    intent.putExtra("time",event1.getC_time());
-                                    intent.putExtra("day",event1.getC_day());
-                                    startActivity(intent);
+                                public void onClick(DialogInterface dialogInterface, int which) {
+                                    ClassManager.delete(event1);
                                 }
                             });
-                }
+                            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int which) {
+                                }
+                            });
+                            builder.create().show();
+                        }
 
+                        public void onEdit(Class_t event1){
+                            //modify
+                            if(event1.c_isClass){
+                                Intent intent = new Intent(MainActivity.this, ClassActivity.class);
+                                intent.putExtra("action", ClassActivity.ACTION_DETAIL);
+                                intent.putExtra("startweek",event1.getC_startWeek() );
+                                intent.putExtra("time",event1.getC_time());
+                                intent.putExtra("day",event1.getC_day());
+                                startActivity(intent);
+                            }
+                            else{
+                                Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
+                                intent.putExtra("action", ClassActivity.ACTION_DETAIL);
+                                intent.putExtra("startweek",event1.getC_startWeek() );
+                                intent.putExtra("time",event1.getC_time());
+                                intent.putExtra("day",event1.getC_day());
+                                startActivity(intent);
+                            }
+                        }
+                });
             }
         });
     }
