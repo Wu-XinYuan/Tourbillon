@@ -4,7 +4,7 @@
     android:id="@+id/LinearLayout_Main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg4"
+    android:background="@mipmap/bg2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -170,8 +170,8 @@
             app:columnNumber="7"
             app:eventTextBgColor="#85cdca"
             app:eventTextBgLineColor="#525252"
-            app:eventTextColor="#FF000000"
-            app:eventTextSize="12sp"
+            app:eventTextColor="#FFFFFFFF"
+            app:eventTextSize="14sp"
             app:hourTextBgColor="#ffffff"
             app:hourTextColor="#525252"
             app:hourTextSize="10sp"

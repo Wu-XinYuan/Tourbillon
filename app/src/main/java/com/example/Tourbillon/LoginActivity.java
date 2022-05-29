@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        ClassManager.deleteAllClass();
                         int code = response.code();
                         String body = response.body().string();
                         Log.d("CourseDownloader", "Post request received a response -- " + code + "\n" + body);
@@ -137,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                 course.setC_name(jsonCourse.getString("kcmc"));
                 course.setC_room(jsonCourse.getString("cdmc"));
                 course.setC_day(jsonCourse.getInt("xqj"));
+                course.setC_detail(jsonCourse.getString("xkbz"));
                 List<Integer> startAndStep = getStartAndStep(jsonCourse.getString("jcs"));
                 course.setC_time(startAndStep.get(0));
                 course.setC_duration(startAndStep.get(1));
@@ -149,6 +151,12 @@ public class LoginActivity extends AppCompatActivity {
                     course.setC_endWeek(Integer.parseInt(weeks[0]));
                 else
                     course.setC_endWeek(Integer.parseInt(weeks[1]));
+                char[] weekCodeArray = new char[18];
+                for (int j=0; j<18; ++j)
+                    weekCodeArray[j] = '0';
+                for (int j=course.getC_startWeek(); j<=course.getC_endWeek(); ++j)
+                    weekCodeArray[j-1] = '1';
+                course.setWeekCode(new String(weekCodeArray));
                 course.setC_detail(jsonCourse.getString("xkbz"));
                 courses.add(course);
                 ClassManager.insert(course);

@@ -30,6 +30,7 @@ public class Class_t {
     private String weekCode = "000000000000000000";
     public boolean c_isClass = true;
     private int contentColor;
+    private int textColor;
     private String[] start_times = {"8:00", "8:55", "10:00", "10:55", "12:00", "12:55", "14:00", "14:55", "16:00", "16:55", "18:00", "18:55", "19:45", "20:30"};
     private String [] end_times = {"8:45", "9:40", "10:45", "11:40", "12:45", "13:40", "14:45", "15:40", "16:45", "17:40", "18:45", "19:40", "20:20", "21:20"};
 
@@ -48,6 +49,7 @@ public class Class_t {
                 ", c_teacher=" + c_teacher + '\'' +
                 ", c_isClass=" + c_isClass + '\'' +
                 ", c_weekCode=" + weekCode + '\'' +
+                ", c_detail=" + c_detail +
                 '}';
     }
 
@@ -133,6 +135,14 @@ public class Class_t {
 
     public void setColor(int color){
         this.contentColor = color;
+    }
+
+    public int getTextColor(){
+        return textColor;
+    }
+
+    public void setTextColor(int color){
+        this.textColor = color;
     }
 
     public String getStartTime(){

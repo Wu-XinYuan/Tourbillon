@@ -46,7 +46,7 @@ public class ClassActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Course");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setNavigationOnClickListener(v->ret());
 
         etCourse = findViewById(R.id.et_course);
         etTeacher = findViewById(R.id.et_teacher);
@@ -80,13 +80,19 @@ public class ClassActivity extends AppCompatActivity {
             start = intent.getIntExtra("time", 1);
             int week = intent.getIntExtra("startweek", 1);
             course = ClassManager.query(week,day,start);
+        } else if (action == ACTION_MODIFY){
+            day = intent.getIntExtra("day", 1);
+            start = intent.getIntExtra("time", 1);
+            int week = intent.getIntExtra("startweek", 1);
+            course = ClassManager.query(week,day,start);
+            ClassManager.delete(course);
         }
         actionChange();
         refreshTextViewAfterDialog();
     }
 
     private void loadInitData() {
-        if (action == ACTION_DETAIL) {
+        if (action != ACTION_INSERT) {
             etClassId.setText(course.c_id);
             etCourse.setText(course.c_name);
             etLocation.setText(course.c_room);
@@ -97,7 +103,7 @@ public class ClassActivity extends AppCompatActivity {
             step = course.c_duration;
             end = start + step - 1;
             weekCode = course.getWeekCode().toCharArray();
-            for (int i = 0; i < weekCode.length; i++) {
+            for (int i = 0; i < Class_t.MAX_WEEKS; i++) {
                 isWeekSelected[i] = weekCode[i] == '1';
             }
         }
@@ -111,7 +117,6 @@ public class ClassActivity extends AppCompatActivity {
         endItems = new String[Class_t.MAX_STEPS - start + 1];
         for (int i = start; i <= Class_t.MAX_STEPS; i++)
             endItems[i - start] = String.format(getString(R.string.period), String.valueOf(i));
-        Log.d("ClassActivity", "checkCourse: "+course.c_name);
         tvStart.setText(startItems[start - 1]);
         tvDay.setText(dayItems[day - 1]);
         tvEnd.setText(endItems[end - start]);
@@ -119,6 +124,9 @@ public class ClassActivity extends AppCompatActivity {
 
     private void refreshTextViewAfterDialog() {
         StringBuilder stringBuilder = new StringBuilder();
+//            stringBuilder.append(course.getC_startWeek());
+//            stringBuilder.append(" - ");
+//            stringBuilder.append(course.getC_endWeek());
         for (int i = 0; i < isWeekSelected.length; i++) {
             if (isWeekSelected[i]) {
                 stringBuilder.append(i + 1);
@@ -223,10 +231,14 @@ public class ClassActivity extends AppCompatActivity {
         course.setC_room(etLocation.getText().toString().trim());
         course.setC_detail(etNote.getText().toString().trim());
         course.setC_isClass(true);
-        if(insert)
-            return ClassManager.insert(course);
-        else
-            return ClassManager.update(course);
+        int startWeek = 0, endWeek=17;
+        while (startWeek<18 && weekCode[startWeek]=='0')
+            startWeek++;
+        while (endWeek>=0 && weekCode[endWeek]=='0')
+            endWeek--;
+        course.setC_startWeek(startWeek+1);
+        course.setC_endWeek(endWeek+1);
+        return ClassManager.insert(course);
     }
 
 
@@ -266,6 +278,8 @@ public class ClassActivity extends AppCompatActivity {
                     finish();
             }
         } else if (item.getItemId() == R.id.action_cancel) {
+            if (action==ACTION_MODIFY)
+                ClassManager.insert(course);
             action = ACTION_DETAIL;
             invalidateOptionsMenu();
             actionChange();
@@ -273,6 +287,7 @@ public class ClassActivity extends AppCompatActivity {
             deleteCourse();
         } else if (item.getItemId() == R.id.action_modify) {
             action = ACTION_MODIFY;
+            ClassManager.delete(course);
             invalidateOptionsMenu();
             actionChange();
 
@@ -292,5 +307,11 @@ public class ClassActivity extends AppCompatActivity {
         tvDay.setEnabled(action != ACTION_DETAIL);
 
         loadInitData();
+    }
+
+    private void ret(){
+        if (action == ACTION_MODIFY)
+            ClassManager.insert(course);
+        finish();
     }
 }

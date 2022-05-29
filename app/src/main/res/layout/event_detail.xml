@@ -19,7 +19,7 @@
             android:id="@+id/TextView_eventDetail_Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:layout_margin="10dp"/>
 
         <TextView
@@ -28,6 +28,15 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             app:drawableLeftCompat="@drawable/ic_baseline_access_time_24"
+            android:drawablePadding="10dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/TextView_eventDetail_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:drawableLeftCompat="@drawable/ic_baseline_chat_24"
             android:drawablePadding="10dp"
             android:layout_margin="10dp"/>
 

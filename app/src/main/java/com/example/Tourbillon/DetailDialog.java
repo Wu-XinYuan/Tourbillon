@@ -37,12 +37,14 @@ public class DetailDialog {
             TextView textView_time = view.findViewById(R.id.TextView_classDetail_Time);
             TextView textView_teacher = view.findViewById(R.id.TextView_classDetail_Teacher);
             TextView textView_loacation = view.findViewById(R.id.TextView_classDetail_location);
+            TextView textView_note = view.findViewById(R.id.TextView_classDetail_note);
 
             textView_name.setText(event.getC_name());
             textView_week.setText("第" + event.getC_startWeek() + '-' + event.getC_endWeek() + "周");
             textView_time.setText(event.getStartTime() + " - " + event.getEndTime());
             textView_teacher.setText(event.getC_teacher());
             textView_loacation.setText(event.getC_room());
+            textView_note.setText(event.getC_detail());
         }
         else{
             view = LayoutInflater.from(activity).inflate(R.layout.event_detail,null);
@@ -50,9 +52,11 @@ public class DetailDialog {
             button_edit = view.findViewById(R.id.button_eventDetail_edit);
             TextView textView_name = view.findViewById(R.id.TextView_eventDetail_Name);
             TextView textView_time = view.findViewById(R.id.TextView_eventDetail_Time);
+            TextView textView_note = view.findViewById(R.id.TextView_eventDetail_note);
 
             textView_name.setText(event.getC_name());
             textView_time.setText(event.getStartTime() + " - " + event.getEndTime());
+            textView_note.setText(event.getC_detail());
         }
 
         button_delete.setOnClickListener(view12 -> {

@@ -105,51 +105,12 @@ public class ClassManager {
         db.close();
     }
 
-    /**
-     * 通过id查找，返回一个Class_t对象
-     */
-    public static Class_t getClassById(String id) {
-        //与数据库建立连接
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String sql = " select " + Class_t.KEY_id + "," + Class_t.COLUMN_name +
-                "," + Class_t.COLUMN_time + "," + Class_t.COLUMN_duration +
-                "," + Class_t.COLUMN_startw + "," + Class_t.COLUMN_endw +
-                "," + Class_t.COLUMN_day + "," + Class_t.COLUMN_room + "," + Class_t.COLUMN_teacher +
-                " from " + ClassDBHelper.TABLE_NAME + " where " + Class_t.KEY_id + "=?";
-        Class_t myclass = new Class_t();
-        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(id)});
-        while (cursor.moveToNext()) {
-            int i = cursor.getColumnIndex(Class_t.KEY_id);
-            int j = cursor.getColumnIndex(Class_t.COLUMN_name);
-            int k = cursor.getColumnIndex(Class_t.COLUMN_time);
-            int l = cursor.getColumnIndex(Class_t.COLUMN_duration);
-            int p = cursor.getColumnIndex(Class_t.COLUMN_startw);
-            int q = cursor.getColumnIndex(Class_t.COLUMN_endw);
-            int t = cursor.getColumnIndex(Class_t.COLUMN_day);
-            int m = cursor.getColumnIndex(Class_t.COLUMN_room);
-            int n = cursor.getColumnIndex(Class_t.COLUMN_teacher);
-            if (i >= 0)
-                myclass.c_id = cursor.getString(i);
-            if (j >= 0)
-                myclass.c_name = cursor.getString(j);
-            if (k >= 0)
-                myclass.c_time = cursor.getInt(k);
-            if (l >= 0)
-                myclass.c_duration = cursor.getInt(l);
-            if (p >= 0)
-                myclass.c_startWeek = cursor.getInt(p);
-            if (q >= 0)
-                myclass.c_endWeek = cursor.getInt(q);
-            if (t >= 0)
-                myclass.c_day = cursor.getInt(t);
-            if (m >= 0)
-                myclass.c_room = cursor.getString(m);
-            if (n >= 0)
-                myclass.c_teacher = cursor.getString(n);
+    public static void deleteAllClass(){
+        List<Class_t> classes = query();
+        for (Class_t c : classes){
+            if (c.c_isClass)
+                delete(c);
         }
-        cursor.close();
-        db.close();
-        return myclass;
     }
 
     public static Class_t query(int week, int day, int time) {
@@ -159,7 +120,9 @@ public class ClassManager {
         String sql = " select " + Class_t.COLUMN_name + "," + Class_t.COLUMN_time +
                 "," + Class_t.COLUMN_duration + "," + Class_t.COLUMN_startw +
                 "," + Class_t.COLUMN_endw + "," + Class_t.COLUMN_day +
-                "," + Class_t.COLUMN_detail +
+                "," + Class_t.COLUMN_detail +  "," + Class_t.KEY_id +
+                "," + Class_t.COLUMN_room + "," + Class_t.COLUMN_teacher +
+                "," + Class_t.COLUMN_weekcode +
                 " from " + ClassDBHelper.TABLE_NAME + " where " + Class_t.COLUMN_startw + "=? and " +
                 Class_t.COLUMN_time + "=? and " + Class_t.COLUMN_day + "=?";
         Class_t myclass = new Class_t();
@@ -176,6 +139,7 @@ public class ClassManager {
             int m = cursor.getColumnIndex(Class_t.COLUMN_room);
             int n = cursor.getColumnIndex(Class_t.COLUMN_teacher);
             int a = cursor.getColumnIndex(Class_t.COLUMN_detail);
+            int b = cursor.getColumnIndex(Class_t.COLUMN_weekcode);
             if(i >= 0)
                 myclass.c_id = cursor.getString(i);
             if(j >= 0)
@@ -196,6 +160,8 @@ public class ClassManager {
                 myclass.c_teacher = cursor.getString(n);
             if(a >= 0)
                 myclass.c_detail = cursor.getString(a);
+            if (b>0)
+                myclass.setWeekCode(cursor.getString(b));
         }
         cursor.close();
         db.close();
@@ -208,7 +174,8 @@ public class ClassManager {
         String sql = " select " + Class_t.KEY_id + "," + Class_t.COLUMN_name +
                 "," + Class_t.COLUMN_time + "," + Class_t.COLUMN_duration +
                 "," + Class_t.COLUMN_startw + "," + Class_t.COLUMN_endw +
-                "," + Class_t.COLUMN_day + "," + Class_t.COLUMN_room + "," + Class_t.COLUMN_teacher +
+                "," + Class_t.COLUMN_day + "," + Class_t.COLUMN_room +
+                "," + Class_t.COLUMN_teacher + "," + Class_t.COLUMN_detail +
                 " from " + ClassDBHelper.TABLE_NAME;
         @SuppressLint("Recycle") Cursor cursor = db.rawQuery(sql, null);
         List<Class_t> classes = new ArrayList<>();
@@ -229,8 +196,9 @@ public class ClassManager {
             Class.setC_day(Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_day"))));
             Class.setC_room(cursor.getString(cursor.getColumnIndex("c_room")));
             Class.setC_teacher(cursor.getString(cursor.getColumnIndex("c_teacher")));
+            Class.setC_detail(cursor.getString(cursor.getColumnIndex(Class_t.COLUMN_detail)));
             int seed = ((int) name.charAt(0)) % 7;
-            Class.setColor(Color.parseColor(pleasantColors[seed]));
+            Class.setColor(Color.parseColor("#525252"));
             classes.add(Class);
             // 将游标移到下一行
             cursor.moveToNext();
@@ -251,7 +219,7 @@ public class ClassManager {
                 "," + Class_t.COLUMN_startw + "," + Class_t.COLUMN_endw +
                 "," + Class_t.COLUMN_day + "," + Class_t.COLUMN_room +
                 "," + Class_t.COLUMN_teacher + "," + Class_t.COLUMN_isclass +
-                "," + Class_t.COLUMN_weekcode +
+                "," + Class_t.COLUMN_weekcode + "," + Class_t.COLUMN_detail +
                 " from " + ClassDBHelper.TABLE_NAME;
         @SuppressLint("Recycle") Cursor cursor = db.rawQuery(sql, null);
         List<Class_t> classes = new ArrayList<>();
@@ -267,7 +235,7 @@ public class ClassManager {
             int startWeek = Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_startWeek")));
             int endWeek = Integer.parseInt(cursor.getString(cursor.getColumnIndex("c_endWeek")));
             Log.i(TAG, "getCurrentWeekClasses: "+name+' '+isClass+' '+weekCodeString);
-            if ((isClass && startWeek <= CurWeek && endWeek >= CurWeek) || (!isClass && weekCode[CurWeek]=='1')) {
+            if ((isClass && startWeek <= CurWeek && endWeek >= CurWeek) || (weekCode[CurWeek-1]=='1')) {
                 seed++;
                 Class_t Class = new Class_t();
                 Class.setC_id(cursor.getString(cursor.getColumnIndex("c_id")));
@@ -280,8 +248,14 @@ public class ClassManager {
                 Class.setC_room(cursor.getString(cursor.getColumnIndex("c_room")));
                 Class.setC_teacher(cursor.getString(cursor.getColumnIndex("c_teacher")));
                 Class.setC_isClass(isClass);
+                Class.setC_detail(cursor.getString(cursor.getColumnIndex(Class_t.COLUMN_detail)));
                 Class.setWeekCode(weekCodeString);
-                Class.setColor(Color.parseColor(pleasantColors[seed%7]));
+                //Class.setColor(Color.parseColor("#9F7D8C82"));
+                //Class.setColor(Color.parseColor("#80BDC3C7"));银
+                if (isClass)
+                    Class.setColor(Color.parseColor("#9F696969"));
+                else
+                    Class.setColor(Color.parseColor("#9F405955"));
                 classes.add(Class);
             }
             // 将游标移到下一行
@@ -297,6 +271,7 @@ public class ClassManager {
      * 更新数据
      */
     public static boolean update(Class_t myclass) {
+        Log.i(TAG, "update: "+myclass.toString());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -312,7 +287,13 @@ public class ClassManager {
         contentValues.put("c_weekCode", myclass.getWeekCode());
         contentValues.put("c_detail", myclass.getC_detail());
 
-        db.update(ClassDBHelper.TABLE_NAME, contentValues, Class_t.KEY_id + "=?", new String[]{String.valueOf(myclass.c_id)});
+        db.update(ClassDBHelper.TABLE_NAME, contentValues,
+                Class_t.COLUMN_startw + "=? and " +
+                        Class_t.COLUMN_day + "=? and " +
+                        Class_t.COLUMN_time + "=?",
+                new String[]{String.valueOf(myclass.c_startWeek),
+                        String.valueOf(myclass.c_day),
+                        String.valueOf(myclass.c_time)});
         db.close();
         return true;
     }

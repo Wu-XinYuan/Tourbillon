@@ -48,7 +48,7 @@ public class ScheduleActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Schedule");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setNavigationOnClickListener(v -> ret());
 
         etSchedule = findViewById(R.id.et_schedule);
         etDetail = findViewById(R.id.et_detail);
@@ -75,18 +75,25 @@ public class ScheduleActivity extends AppCompatActivity {
             step = 1;
             isWeekSelected[week - 1] = true;
             course = new Class_t();
+            weekCode[0]='1';
         } else if (action == ACTION_DETAIL) {
             day = intent.getIntExtra("day", 1);
             start = intent.getIntExtra("time", 1);
             int week = intent.getIntExtra("startweek", 1);
             course = ClassManager.query(week,day,start);
+        } else if (action == ACTION_MODIFY){
+            day = intent.getIntExtra("day", 1);
+            start = intent.getIntExtra("time", 1);
+            int week = intent.getIntExtra("startweek", 1);
+            course = ClassManager.query(week,day,start);
+            ClassManager.delete(course);
         }
         actionChange();
         refreshTextViewAfterDialog();
     }
 
     private void loadInitData() {
-        if (action == ACTION_DETAIL) {
+        if (action != ACTION_INSERT) {
             etSchedule.setText(course.c_name);
             etDetail.setText(course.c_detail);
             day = course.c_day;
@@ -94,7 +101,7 @@ public class ScheduleActivity extends AppCompatActivity {
             step = course.c_duration;
             end = start + step - 1;
             weekCode = course.getWeekCode().toCharArray();
-            for (int i = course.c_startWeek; i < course.c_endWeek; i++) {
+            for (int i = 0; i < Class_t.MAX_WEEKS; i++) {
                 isWeekSelected[i] = weekCode[i] == '1';
             }
         }
@@ -214,15 +221,18 @@ public class ScheduleActivity extends AppCompatActivity {
         course.setC_time(start);
         course.setC_duration(step);
         course.setC_day(day);
+        course.setC_isClass(false);
         course.setC_detail(etDetail.getText().toString().trim());
         course.setWeekCode(new String(weekCode));
-        course.setC_startWeek(weekCode[0]);
-        course.setC_endWeek(weekCode[weekCode.length-1]);
+        int startWeek = 0, endWeek=17;
+        while (startWeek<18 && weekCode[startWeek]=='0')
+            startWeek++;
+        while (endWeek>=0 && weekCode[endWeek]=='0')
+            endWeek--;
+        course.setC_startWeek(startWeek+1);
+        course.setC_endWeek(endWeek+1);
         course.setC_isClass(false);
-        if(insert)
-            return classOp.insert(course);
-        else
-            return classOp.update(course);
+        return ClassManager.insert(course);
     }
 
 
@@ -262,6 +272,8 @@ public class ScheduleActivity extends AppCompatActivity {
                     finish();
             }
         } else if (item.getItemId() == R.id.action_cancel) {
+            if (action==ACTION_MODIFY)
+                ClassManager.insert(course);
             action = ACTION_DETAIL;
             invalidateOptionsMenu();
             actionChange();
@@ -271,7 +283,6 @@ public class ScheduleActivity extends AppCompatActivity {
             action = ACTION_MODIFY;
             invalidateOptionsMenu();
             actionChange();
-
         }
         return true;
     }
@@ -285,5 +296,11 @@ public class ScheduleActivity extends AppCompatActivity {
         tvDay.setEnabled(action != ACTION_DETAIL);
 
         loadInitData();
+    }
+
+    private void ret(){
+        if (action == ACTION_MODIFY)
+            ClassManager.insert(course);
+        finish();
     }
 }

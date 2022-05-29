@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                             //modify
                             if(event1.c_isClass){
                                 Intent intent = new Intent(MainActivity.this, ClassActivity.class);
-                                intent.putExtra("action", ClassActivity.ACTION_DETAIL);
+                                intent.putExtra("action", ClassActivity.ACTION_MODIFY);
                                 intent.putExtra("startweek",event1.getC_startWeek() );
                                 intent.putExtra("time",event1.getC_time());
                                 intent.putExtra("day",event1.getC_day());
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else{
                                 Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
-                                intent.putExtra("action", ClassActivity.ACTION_DETAIL);
+                                intent.putExtra("action", ClassActivity.ACTION_MODIFY);
                                 intent.putExtra("startweek",event1.getC_startWeek() );
                                 intent.putExtra("time",event1.getC_time());
                                 intent.putExtra("day",event1.getC_day());
@@ -162,36 +162,36 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onWindowFocusChanged: header width:" + view_weekHeader.getWidth());
         //设置初始滚动位置
         ScrollView scrollView = findViewById(R.id.scrollView_main);
-        scrollView.scrollTo(0, 1680);
+        scrollView.scrollTo(0, 1280);
     }
 
 
-    private void insertData(String id, String name, Integer time, Integer day) {
-        classOp.insertData(id, name, time, 2, 1, 16, day, " ", " ");
-    }
+//    private void insertData(String id, String name, Integer time, Integer day) {
+//        classOp.insertData(id, name, time, 2, 1, 16, day, " ", " ");
+//    }
 
-    private void addTestData() {
-        // 加入测试课程
-        insertData("Gaoshu", "高数", 3, 1);
-        insertData("RuanGong", "软件工程", 1, 2);
-        insertData("RuanGong2", "软件工程", 3, 2);
-        classOp.insertData("ShuJuKu", "数据库", 5, 3, 1, 16, 3, "东上院101", "x老师");
-        classOp.insertData("KC4", "课程4", 3, 2, 1, 8, 4, "东上院101", "x老师");
-        classOp.insertData("KC5", "课程5", 10, 3, 1, 16, 5, "东上院101", "x老师");
-        classOp.insertData("KC6", "课程6", 8, 2, 1, 16, 6, "东上院101", "x老师");
-        //insertData(6, "课程7", 1, 2, 1, 16, 7, "东上院102", "x老师");
-        printClassDatabase();
-    }
+//    private void addTestData() {
+//        // 加入测试课程
+//        insertData("Gaoshu", "高数", 3, 1);
+//        insertData("RuanGong", "软件工程", 1, 2);
+//        insertData("RuanGong2", "软件工程", 3, 2);
+//        classOp.insertData("ShuJuKu", "数据库", 5, 3, 1, 16, 3, "东上院101", "x老师");
+//        classOp.insertData("KC4", "课程4", 3, 2, 1, 8, 4, "东上院101", "x老师");
+//        classOp.insertData("KC5", "课程5", 10, 3, 1, 16, 5, "东上院101", "x老师");
+//        classOp.insertData("KC6", "课程6", 8, 2, 1, 16, 6, "东上院101", "x老师");
+//        //insertData(6, "课程7", 1, 2, 1, 16, 7, "东上院102", "x老师");
+//        printClassDatabase();
+//    }
 
     public void drawClassBoxes() {
         //从数据库拿到课程数据保存在链表
-        List<Class_t> classes = classOp.getCurrentWeekClasses();
+        List<Class_t> classes = ClassManager.getCurrentWeekClasses();
         ScheduleView scheduleView = findViewById(R.id.ScheduleView);
         scheduleView.setEvents(classes);
     }
 
     public void printClassDatabase() {
-        List<Class_t> classes = classOp.query();
+        List<Class_t> classes = ClassManager.query();
         for (Class_t c : classes) {
             Log.i(TAG, "printClassDatabase: " + c.toString());
         }
