@@ -12,8 +12,11 @@
 
 开发者：
 
-[wxy]: https://github.com/Wu-XinYuan	""wxy""
+xx:https://github.com/blueeeeeeeee
 
-[xx]:https://github.com/blueeeeeeeee "xx"
-[pmc]:https://github.com/Panmuchen "pmc"
+pmc:https://github.com/Panmuchen
+
+wxy: https://github.com/Wu-XinYuan
+
+
 
