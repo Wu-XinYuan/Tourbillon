@@ -107,6 +107,10 @@ public class ClassActivity extends AppCompatActivity {
                 isWeekSelected[i] = weekCode[i] == '1';
             }
         }
+        else {
+            for (int i = 0; i < Class_t.MAX_WEEKS; i++)
+                weekCode[i]=(isWeekSelected[i])?'1':'0';
+        }
 
         for (int i = 1; i <= Class_t.MAX_WEEKS; i++) {
             weekItems[i - 1] = String.format(getString(R.string.week), String.valueOf(i));
